@@ -1,0 +1,51 @@
+{
+  "name": "shoppizza",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "iosSE": "react-native run-ios --simulator=\"iPhone SE\"",
+    "ios8": "react-native run-ios --simulator=\"iPhone 8\"",
+    "iosMax": "react-native run-ios --simulator=\"iPhone 12 Pro Max\"",
+    "ios11": "react-native run-ios --simulator=\"iPhone 11\"",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint .",
+    "pod": "cd ios && pod install && cd ..",
+    "podup": "cd ios && pod install --repo-update",
+    "reb": "rm -rf $TMPDIR/react-* && rm -rf node_modules/ && npm cache verify && npm install && npm start -- --reset-cache",
+    "rebs": "watchman watch-del-all && rm -rf $TMPDIR/react-* && rm -rf node_modules/ && npm cache verify && npm install && npm start -- --reset-cache"
+  },
+  "dependencies": {
+    "@react-navigation/bottom-tabs": "^5.11.8",
+    "@react-navigation/native": "^5.9.3",
+    "@react-navigation/stack": "^5.14.3",
+    "axios": "^0.21.1",
+    "mobx": "^6.1.7",
+    "mobx-react": "^7.1.0",
+    "moment": "^2.29.1",
+    "react": "16.13.1",
+    "react-native": "0.63.4",
+    "react-native-extended-stylesheet": "^0.12.0",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-reanimated": "^1.13.2",
+    "react-native-safe-area-context": "^3.1.9",
+    "react-native-screens": "^2.18.0",
+    "react-native-vector-icons": "^8.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.13.8",
+    "@babel/plugin-proposal-decorators": "^7.13.5",
+    "@babel/runtime": "7.13.8",
+    "@react-native-community/eslint-config": "1.1.0",
+    "babel-jest": "25.5.1",
+    "eslint": "6.8.0",
+    "jest": "25.5.4",
+    "metro-react-native-babel-preset": "0.59.0",
+    "react-test-renderer": "16.13.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
