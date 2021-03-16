@@ -2,23 +2,32 @@ import React from 'react';
 import {Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Categories from './src/screens/Categories';
-import Basket from './src/screens/Basket';
-import Payment from './src/screens/Payment';
-import Products from './src/screens/Products';
-import Product from './src/screens/Product';
-import {Provider} from 'mobx-react/src/Provider';
+import { observer, Provider } from "mobx-react";
 import {NavigationContainer} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
+import Categories from './src/screens/Categories';
+import Basket from './src/screens/Basket';
+import Payment from './src/screens/Payment';
+import Products from './src/screens/Products';
+import Product from './src/screens/Product';
+import CategoryStore from './src/stories/CategoryStore';
+import BasketStore from './src/stories/BasketStore';
+import ProductStore from './src/stories/ProductStore';
+import { IconCategory, IconHistory, IconHome, IconShoppingBag } from "./assets/icon/icons";
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-Ionicons.loadFont();
+// Ionicons.loadFont();
 
-const stories = {};
+const stories = {
+  categoryStore: CategoryStore,
+  basketStore: BasketStore,
+  productStore: ProductStore,
+};
 
 const CategoriesStack = () => {
   return (
@@ -80,63 +89,64 @@ const ProductStack = () => {
   );
 };
 
-const App = () => {
-  return (
-    <Provider>
-      <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName={'categories'}
-          tabBarOptions={{
-            activeTinColor: '#42f44b',
-          }}>
-          <Tab.Screen
-            name={'Каталог'}
-            component={CategoriesStack}
-            option={{
-              tabBarLabel: 'Каталог',
-              tabBarIcon: ({color, size}) => <Text>Каталог</Text>,
-            }}
-          />
-          <Tab.Screen
-            name={'Корзина'}
-            component={BasketStack}
-            option={{
-              tabBarLabel: 'Корзина',
-              tabBarIcon: ({color, size}) => <Text>Корзина</Text>,
-            }}
-          />
-          <Tab.Screen
-            name={'Оплата'}
-            component={PaymentStack}
-            option={{
-              tabBarLabel: 'Оплата',
-              tabBarIcon: ({color, size}) => <Text>Оплата</Text>,
-            }}
-          />
-          <Tab.Screen
-            name={'Товары'}
-            component={ProductsStack}
-            option={{
-              tabBarLabel: 'Товары',
-              tabBarIcon: ({color, size}) => (
-                <Ionicons name="cog" color={color} size={size} />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name={'Товар'}
-            component={ProductStack}
-            option={{
-              tabBarLabel: 'Товар',
-              tabBarIcon: ({color, size}) => (
-                <Ionicons name="cog" color={color} size={size} />
-              ),
-            }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </Provider>
-  );
-};
+@observer
+class App extends React.Component {
+  render() {
+    return (
+      <Provider {...stories}>
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName={'categories'}
+            tabBarOptions={{
+              activeTinColor: '#42f44b',
+            }}>
+            <Tab.Screen
+              name={'Главная'}
+              component={CategoriesStack}
+              option={{
+                tabBarLabel: 'Каталог1',
+                tabBarIcon: ({ color, size }) => <IconHome />,
+              }}
+            />
+            <Tab.Screen
+              name={'basket'}
+              component={BasketStack}
+              option={{
+                tabBarLabel: 'Корзина',
+                tabBarIcon: ({ color, size }) => <IconCategory />,
+              }}
+            />
+            <Tab.Screen
+              name={'payment'}
+              component={PaymentStack}
+              option={{
+                tabBarLabel: 'Оплата',
+                tabBarIcon: ({ color, size }) => <IconShoppingBag />,
+              }}
+            />
+            <Tab.Screen
+              name={'products'}
+              component={ProductsStack}
+              option={{
+                tabBarLabel: 'Товары',
+                tabBarIcon: ({ color, size }) => <IconHistory />,
+              }}
+            />
+            <Tab.Screen
+              name={'product'}
+              component={ProductStack}
+              option={{
+                tabBarLabel: 'Товар',
+                tabBarIcon: ({ color, size }) => (
+                  <Ionicons name="cog" color={color} size={size} />
+                ),
+              }}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </Provider>
+    );
+  }
+}
 
 export default App;

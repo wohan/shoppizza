@@ -1,5 +1,4 @@
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
   plugins: [
     [
       '@babel/plugin-proposal-decorators',
@@ -7,5 +6,12 @@ module.exports = {
         legacy: true,
       },
     ],
+    [
+      'babel-plugin-inline-import',
+      {
+        extensions: ['.svg'],
+      },
+    ],
   ],
+  presets: ['module:metro-react-native-babel-preset'],
 };
