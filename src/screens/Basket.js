@@ -22,7 +22,6 @@ const Basket = inject('basketStore')(
     const {productsInBasket} = basketStore;
 
     const renderItem = (product) => {
-
       product.cacheBack = 300;
 
       return (
@@ -63,32 +62,80 @@ const Basket = inject('basketStore')(
     };
 
     return (
-      <View style={styles.wrapper}>
-        <SafeAreaView>
-          <View style={styles.headerWrapper}>
-            <Text style={styles.textHeader}>Корзина</Text>
+      <SafeAreaView style={styles.wrapper}>
+        <View style={styles.headerWrapper}>
+          <Text style={styles.textHeader}>Корзина</Text>
+        </View>
+        <View style={styles.logoWrapper}>
+          <Image
+            style={styles.image}
+            source={require('../../assets/images/logo_1.jpg')}
+          />
+          <Text style={styles.textLogo}>Ситипицца</Text>
+        </View>
+        <View style={styles.textWrapper}>
+          <Text style={styles.textBasket}>Моя корзина</Text>
+          <Text style={styles.clearBasketButton}>Очистить корзину</Text>
+        </View>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}>
+          {productsInBasket.map((item) => renderItem(item))}
+        </ScrollView>
+        <View style={styles.footerWrapper}>
+          <View style={styles.footerTextWrapper}>
+            <Text style={styles.textCostBasket}>Стоимость корзины:</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('delivery')}>
+              <Text style={styles.toRegistrationButton}>К оформлению</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.logoWrapper}>
-            <Image
-              style={styles.image}
-              source={require('../../assets/images/logo_1.jpg')}
-            />
-            <Text style={styles.textLogo}>Ситипицца</Text>
-          </View>
-          <View style={styles.textWrapper}>
-            <Text style={styles.textBasket}>Моя корзина</Text>
-            <Text style={styles.clearBasketButton}>Очистить корзину</Text>
-          </View>
-          <ScrollView>
-            {productsInBasket.map((item) => renderItem(item))}
-          </ScrollView>
-        </SafeAreaView>
-      </View>
+          <Text style={styles.costProducts}>{`${10000}₽`}</Text>
+        </View>
+      </SafeAreaView>
     );
   }),
 );
 
 const styles = StyleSheet.create({
+  scrollView: {
+    height: '80%',
+  },
+  costProducts: {
+    color: colors.white,
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: '600',
+    fontSize: 18,
+    lineHeight: 21,
+    paddingLeft: 16,
+    paddingBottom: 12,
+  },
+  toRegistrationButton: {
+    color: colors.white,
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: '600',
+    fontSize: 14,
+    lineHeight: 21,
+  },
+  textCostBasket: {
+    color: colors.white,
+    fontFamily: 'Ubuntu-Regular',
+    fontSize: 14,
+    lineHeight: 21,
+  },
+  footerTextWrapper: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    justifyContent: 'space-between',
+  },
+  footerWrapper: {
+    position: 'absolute',
+    bottom: 30,
+    backgroundColor: colors.blue,
+    width: '100%',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
   countProduct: {
     width: 54,
     height: 29,
@@ -221,7 +268,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wrapper: {
-    flex: 1,
+    flexGrow: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'column',
     backgroundColor: colors.white,
   },
 });

@@ -11,6 +11,12 @@ import iconHistory from './iconHistory.svg';
 import iconButtonDown from './iconButtonDown.svg';
 import iconButtonUp from './iconButtonUp.svg';
 import iconBasket from './iconBasket.svg';
+import iconClearInput from './iconClearInput.svg';
+import iconAvatar from './iconAvatar.svg';
+import iconOrder from './iconOrder.svg';
+import iconSuccess from './iconSuccess.svg';
+import iconSmileySuccess from './iconSmileySuccess.svg';
+import iconSmileyError from './iconSmileyError.svg';
 
 export const IconFooterProductsList = () => (
   <SvgXml width="128" height="62" xml={iconFooterProductsList} />
@@ -54,4 +60,28 @@ export const IconButtonUp = () => (
 
 export const IconBasket = () => (
   <SvgXml width="37" height="30" xml={iconBasket} />
+);
+
+export const IconClearInput = () => (
+  <SvgXml width="25" height="25" xml={iconClearInput} />
+);
+
+export const IconAvatar = () => (
+  <SvgXml width="25" height="25" xml={iconAvatar} />
+);
+
+export const IconOrder = () => (
+  <SvgXml width="25" height="25" xml={iconOrder} />
+);
+
+export const IconSuccess = () => (
+  <SvgXml width="25" height="25" xml={iconSuccess} />
+);
+
+export const IconSmileySuccess = () => (
+  <SvgXml width="119" height="119" xml={iconSmileySuccess} />
+);
+
+export const IconSmileyError = () => (
+  <SvgXml width="119" height="119" xml={iconSmileyError} />
 );

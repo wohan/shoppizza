@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import { observer, Provider } from "mobx-react";
+import {observer, Provider} from 'mobx-react';
 import {NavigationContainer} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,15 +13,21 @@ import Basket from './src/screens/Basket';
 import Payment from './src/screens/Payment';
 import Products from './src/screens/Products';
 import Product from './src/screens/Product';
+import Delivery from './src/screens/Delivery';
 import CategoryStore from './src/stories/CategoryStore';
 import BasketStore from './src/stories/BasketStore';
 import ProductStore from './src/stories/ProductStore';
-import { IconCategory, IconHistory, IconHome, IconShoppingBag } from "./assets/icon/icons";
+import {
+  IconCategory,
+  IconHistory,
+  IconHome,
+  IconShoppingBag,
+} from './assets/icon/icons';
+import PaymentSuccess from './src/screens/PaymentSuccess';
+import PaymentError from './src/screens/PaymentError';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// Ionicons.loadFont();
 
 const stories = {
   categoryStore: CategoryStore,
@@ -49,15 +55,30 @@ const BasketStack = () => {
         component={Basket}
         options={{headerShown: false}}
       />
+      <Stack.Screen
+        name={'delivery'}
+        component={Delivery}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'paymentsuccess'}
+        component={PaymentSuccess}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'paymenterror'}
+        component={PaymentError}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
 
 const PaymentStack = () => {
   return (
-    <Stack.Navigator initialRouteName={'Payment'}>
+    <Stack.Navigator initialRouteName={'payment'}>
       <Stack.Screen
-        name={'Payment'}
+        name={'payment'}
         component={Payment}
         options={{headerShown: false}}
       />
@@ -105,7 +126,7 @@ class App extends React.Component {
               component={CategoriesStack}
               option={{
                 tabBarLabel: 'Каталог1',
-                tabBarIcon: ({ color, size }) => <IconHome />,
+                tabBarIcon: ({color, size}) => <IconHome />,
               }}
             />
             <Tab.Screen
@@ -113,7 +134,7 @@ class App extends React.Component {
               component={BasketStack}
               option={{
                 tabBarLabel: 'Корзина',
-                tabBarIcon: ({ color, size }) => <IconCategory />,
+                tabBarIcon: ({color, size}) => <IconCategory />,
               }}
             />
             <Tab.Screen
@@ -121,7 +142,7 @@ class App extends React.Component {
               component={PaymentStack}
               option={{
                 tabBarLabel: 'Оплата',
-                tabBarIcon: ({ color, size }) => <IconShoppingBag />,
+                tabBarIcon: ({color, size}) => <IconShoppingBag />,
               }}
             />
             <Tab.Screen
@@ -129,7 +150,7 @@ class App extends React.Component {
               component={ProductsStack}
               option={{
                 tabBarLabel: 'Товары',
-                tabBarIcon: ({ color, size }) => <IconHistory />,
+                tabBarIcon: ({color, size}) => <IconHistory />,
               }}
             />
             <Tab.Screen
@@ -137,7 +158,7 @@ class App extends React.Component {
               component={ProductStack}
               option={{
                 tabBarLabel: 'Товар',
-                tabBarIcon: ({ color, size }) => (
+                tabBarIcon: ({color, size}) => (
                   <Ionicons name="cog" color={color} size={size} />
                 ),
               }}
