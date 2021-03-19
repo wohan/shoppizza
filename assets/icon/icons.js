@@ -17,6 +17,9 @@ import iconOrder from './iconOrder.svg';
 import iconSuccess from './iconSuccess.svg';
 import iconSmileySuccess from './iconSmileySuccess.svg';
 import iconSmileyError from './iconSmileyError.svg';
+import iconImageCategory from './iconImageCategory.svg';
+import iconCursorUp from './iconCursorUp.svg';
+import iconEye from './iconEye.svg';
 
 export const IconFooterProductsList = () => (
   <SvgXml width="128" height="62" xml={iconFooterProductsList} />
@@ -84,4 +87,16 @@ export const IconSmileySuccess = () => (
 
 export const IconSmileyError = () => (
   <SvgXml width="119" height="119" xml={iconSmileyError} />
+);
+
+export const IconImageCategory = () => (
+  <SvgXml width="61" height="61" xml={iconImageCategory} />
+);
+
+export const IconCursorUp = () => (
+  <SvgXml width="25" height="25" xml={iconCursorUp} />
+);
+
+export const IconEye = () => (
+  <SvgXml width="25" height="25" xml={iconEye} />
 );

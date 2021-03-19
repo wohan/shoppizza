@@ -14,6 +14,7 @@ import Payment from './src/screens/Payment';
 import Products from './src/screens/Products';
 import Product from './src/screens/Product';
 import Delivery from './src/screens/Delivery';
+import History from './src/screens/History';
 import CategoryStore from './src/stories/CategoryStore';
 import BasketStore from './src/stories/BasketStore';
 import ProductStore from './src/stories/ProductStore';
@@ -110,6 +111,18 @@ const ProductStack = () => {
   );
 };
 
+const HistoryStack = () => {
+  return (
+    <Stack.Navigator initialRouteName={'history'}>
+      <Stack.Screen
+        name={'history'}
+        component={History}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
 @observer
 class App extends React.Component {
   render() {
@@ -123,39 +136,39 @@ class App extends React.Component {
             }}>
             <Tab.Screen
               name={'Главная'}
-              component={CategoriesStack}
+              component={ProductsStack}
               option={{
                 tabBarLabel: 'Каталог1',
                 tabBarIcon: ({color, size}) => <IconHome />,
               }}
             />
             <Tab.Screen
-              name={'basket'}
-              component={BasketStack}
+              name={'Категории'}
+              component={CategoriesStack}
               option={{
                 tabBarLabel: 'Корзина',
                 tabBarIcon: ({color, size}) => <IconCategory />,
               }}
             />
             <Tab.Screen
-              name={'payment'}
-              component={PaymentStack}
+              name={'Корзина'}
+              component={BasketStack}
               option={{
                 tabBarLabel: 'Оплата',
                 tabBarIcon: ({color, size}) => <IconShoppingBag />,
               }}
             />
             <Tab.Screen
-              name={'products'}
-              component={ProductsStack}
+              name={'История'}
+              component={HistoryStack}
               option={{
-                tabBarLabel: 'Товары',
+                tabBarLabel: 'История',
                 tabBarIcon: ({color, size}) => <IconHistory />,
               }}
             />
             <Tab.Screen
-              name={'product'}
-              component={ProductStack}
+              name={'Payment'}
+              component={PaymentStack}
               option={{
                 tabBarLabel: 'Товар',
                 tabBarIcon: ({color, size}) => (
