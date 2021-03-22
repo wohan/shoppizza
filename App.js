@@ -1,12 +1,9 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Text, Image, StyleSheet} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {observer, Provider} from 'mobx-react';
 import {NavigationContainer} from '@react-navigation/native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import EStyleSheet from 'react-native-extended-stylesheet';
 
 import Categories from './src/screens/Categories';
 import Basket from './src/screens/Basket';
@@ -20,12 +17,17 @@ import BasketStore from './src/stories/BasketStore';
 import ProductStore from './src/stories/ProductStore';
 import {
   IconCategory,
+  IconCategoryPink,
   IconHistory,
+  IconHistoryPink,
   IconHome,
+  IconHomePink,
   IconShoppingBag,
+  IconShoppingBagPink,
 } from './assets/icon/icons';
 import PaymentSuccess from './src/screens/PaymentSuccess';
 import PaymentError from './src/screens/PaymentError';
+import {colors} from './assets/colors/colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,9 +52,9 @@ const CategoriesStack = () => {
 
 const BasketStack = () => {
   return (
-    <Stack.Navigator initialRouteName={'Basket'}>
+    <Stack.Navigator initialRouteName={'basket'}>
       <Stack.Screen
-        name={'Basket'}
+        name={'basket'}
         component={Basket}
         options={{headerShown: false}}
       />
@@ -89,21 +91,14 @@ const PaymentStack = () => {
 
 const ProductsStack = () => {
   return (
-    <Stack.Navigator initialRouteName={'Products'}>
+    <Stack.Navigator initialRouteName={'products'}>
       <Stack.Screen
-        name={'Products'}
+        name={'products'}
         component={Products}
         options={{headerShown: false}}
       />
-    </Stack.Navigator>
-  );
-};
-
-const ProductStack = () => {
-  return (
-    <Stack.Navigator initialRouteName={'Product'}>
       <Stack.Screen
-        name={'Product'}
+        name={'product'}
         component={Product}
         options={{headerShown: false}}
       />
@@ -130,57 +125,127 @@ class App extends React.Component {
       <Provider {...stories}>
         <NavigationContainer>
           <Tab.Navigator
-            initialRouteName={'categories'}
+            initialRouteName={'home'}
+            screenOptions={({route}) => ({
+              tabBarIcon: ({focused, color, size}) => {
+                if (route.name === 'home') {
+                  return focused ? (
+                    <IconHomePink color={color} />
+                  ) : (
+                    <IconHome color={color} />
+                  );
+                } else if (route.name === 'categories') {
+                  return focused ? (
+                    <IconCategoryPink color={color} />
+                  ) : (
+                    <IconCategory color={color} />
+                  );
+                } else if (route.name === 'basket') {
+                  return focused ? (
+                    <IconShoppingBagPink color={color} />
+                  ) : (
+                    <IconShoppingBag color={color} />
+                  );
+                } else if (route.name === 'history') {
+                  return focused ? (
+                    <IconHistoryPink color={color} />
+                  ) : (
+                    <IconHistory color={color} />
+                  );
+                } else if (route.name === 'profile') {
+                  return (
+                    <Image
+                      source={require('./assets/images/ava.jpg')}
+                      style={styles.image}
+                    />
+                  );
+                }
+              },
+              tabBarLabel: ({focused, color, size}) => {
+                if (route.name === 'home') {
+                  return (
+                    <Text
+                      style={{
+                        ...styles.textTabs,
+                        color: focused ? colors.pink : colors.blueMenu,
+                      }}>
+                      Главная
+                    </Text>
+                  );
+                } else if (route.name === 'categories') {
+                  return (
+                    <Text
+                      style={{
+                        ...styles.textTabs,
+                        color: focused ? colors.pink : colors.blueMenu,
+                      }}>
+                      Категории
+                    </Text>
+                  );
+                } else if (route.name === 'basket') {
+                  return (
+                    <Text
+                      style={{
+                        ...styles.textTabs,
+                        color: focused ? colors.pink : colors.blueMenu,
+                      }}>
+                      Корзина
+                    </Text>
+                  );
+                } else if (route.name === 'history') {
+                  return (
+                    <Text
+                      style={{
+                        ...styles.textTabs,
+                        color: focused ? colors.pink : colors.blueMenu,
+                      }}>
+                      История
+                    </Text>
+                  );
+                } else if (route.name === 'profile') {
+                  return (
+                    <Text
+                      style={{
+                        ...styles.textTabs,
+                        color: focused ? colors.pink : colors.blueMenu,
+                      }}>
+                      Профиль
+                    </Text>
+                  );
+                }
+              },
+            })}
             tabBarOptions={{
-              activeTinColor: '#42f44b',
+              activeTintColor: colors.white,
+              inactiveTintColor: colors.white,
             }}>
             <Tab.Screen
-              name={'Главная'}
+              options={{tabBarBadge: true}}
+              name={'home'}
               component={ProductsStack}
-              option={{
-                tabBarLabel: 'Каталог1',
-                tabBarIcon: ({color, size}) => <IconHome />,
-              }}
             />
-            <Tab.Screen
-              name={'Категории'}
-              component={CategoriesStack}
-              option={{
-                tabBarLabel: 'Корзина',
-                tabBarIcon: ({color, size}) => <IconCategory />,
-              }}
-            />
-            <Tab.Screen
-              name={'Корзина'}
-              component={BasketStack}
-              option={{
-                tabBarLabel: 'Оплата',
-                tabBarIcon: ({color, size}) => <IconShoppingBag />,
-              }}
-            />
-            <Tab.Screen
-              name={'История'}
-              component={HistoryStack}
-              option={{
-                tabBarLabel: 'История',
-                tabBarIcon: ({color, size}) => <IconHistory />,
-              }}
-            />
-            <Tab.Screen
-              name={'Payment'}
-              component={PaymentStack}
-              option={{
-                tabBarLabel: 'Товар',
-                tabBarIcon: ({color, size}) => (
-                  <Ionicons name="cog" color={color} size={size} />
-                ),
-              }}
-            />
+            <Tab.Screen name={'categories'} component={CategoriesStack} />
+            <Tab.Screen name={'basket'} component={BasketStack} />
+            <Tab.Screen name={'history'} component={HistoryStack} />
+            <Tab.Screen name={'profile'} component={PaymentStack} />
           </Tab.Navigator>
         </NavigationContainer>
       </Provider>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  image: {
+    width: 25,
+    height: 25,
+    borderRadius: 25,
+  },
+  textTabs: {
+    fontFamily: 'Ubuntu-Regular',
+    fontSize: 12,
+    color: colors.blueMenu,
+  },
+});
 
 export default App;

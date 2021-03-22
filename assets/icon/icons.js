@@ -5,9 +5,13 @@ import iconSearch from './iconSearch.svg';
 import iconBack from './iconBack.svg';
 import iconShare from './iconShare.svg';
 import iconCategory from './iconCategory.svg';
+import iconCategoryPink from './iconCategoryPink.svg';
 import iconShoppingBag from './iconShoppingBag.svg';
+import iconShoppingBagPink from './iconShoppingBagPink.svg';
 import iconHome from './iconHome.svg';
+import iconHomePink from './iconHomePink.svg';
 import iconHistory from './iconHistory.svg';
+import iconHistoryPink from './iconHistoryPink.svg';
 import iconButtonDown from './iconButtonDown.svg';
 import iconButtonUp from './iconButtonUp.svg';
 import iconBasket from './iconBasket.svg';
@@ -37,20 +41,36 @@ export const IconShare = () => (
   <SvgXml width="25" height="25" xml={iconShare} />
 );
 
-export const IconCategory = () => (
-  <SvgXml width="25" height="25" xml={iconCategory} />
+export const IconCategory = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconCategory} />
 );
 
-export const IconShoppingBag = () => (
-  <SvgXml width="25" height="25" xml={iconShoppingBag} />
+export const IconCategoryPink = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconCategoryPink} />
 );
 
-export const IconHome = () => (
-  <SvgXml width="25" height="25" xml={iconHome} />
+export const IconShoppingBag = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconShoppingBag} />
 );
 
-export const IconHistory = () => (
-  <SvgXml width="25" height="25" xml={iconHistory} />
+export const IconShoppingBagPink = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconShoppingBagPink} />
+);
+
+export const IconHome = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconHome} />
+);
+
+export const IconHomePink = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconHomePink} />
+);
+
+export const IconHistory = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconHistory} />
+);
+
+export const IconHistoryPink = ({color}) => (
+  <SvgXml width="25" height="25" fill={color} xml={iconHistoryPink} />
 );
 
 export const IconButtonDown = () => (
