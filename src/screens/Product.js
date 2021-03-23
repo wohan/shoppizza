@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {inject, observer} from 'mobx-react';
@@ -18,16 +18,60 @@ const images = [
   },
 ];
 
+const vars1 = ['30см / 650гр.', '40см / 1050гр. +300₽'];
+const vars2 = [
+  'Стандартное',
+  'Сырный борт +30₽',
+  'Тонкое',
+  'Мясной борт +200 000₽',
+];
+
 const Product = inject(
   'categoryStore',
   'productStore',
 )(
   observer(({navigation, route, productStore}) => {
-    const {product} = productStore;
-
+    let [linksImage, setLinksImage] = useState([]);
+    let [currentTypeProduct, setCurrentTypeProduct] = useState({});
+    const {product, productsImages, loadProductsImages} = productStore;
     console.log('route.params  ', route.params);
+    const {item} = route.params;
 
-    // const { item } = route.params;
+    useEffect(() => {
+      loadProductsImages(item.id);
+    }, []);
+
+    useEffect(() => {
+      console.log('productsImages123 ', productsImages);
+      let list = [];
+      productsImages.forEach((item) => {
+        list.push({image: item.linkImage});
+      });
+      setLinksImage(list);
+      console.log('linksImage123 ', linksImage);
+    }, [productsImages]);
+
+    const renderVariantProduct = (
+      item,
+      selected = currentTypeProduct === item,
+    ) => {
+      return (
+        <TouchableOpacity
+          style={
+            selected
+              ? styles.variantWrapper
+              : styles.variantWrapperNotCheck
+          }
+          onPress={() => setCurrentTypeProduct(item)}>
+          <Text
+            style={
+              selected ? styles.variantTextSize : styles.variantTextSizeNotCheck
+            }>
+            {item}
+          </Text>
+        </TouchableOpacity>
+      );
+    };
 
     return (
       <View>
@@ -36,7 +80,7 @@ const Product = inject(
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <IconBack />
             </TouchableOpacity>
-            <Text style={styles.headerText}>{product.name}</Text>
+            <Text style={styles.headerText}>{item.name}</Text>
             <IconShare />
           </View>
         </SafeAreaView>
@@ -48,57 +92,40 @@ const Product = inject(
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 6,
-              width: 328,
-              height: 316,
+              height: 416,
             }}>
-            <FlatListSlider
-              data={images}
-              autoscroll={false}
-              width={328}
-              height={316}
-            />
+            {linksImage.length > 0 && (
+              <FlatListSlider
+                data={linksImage}
+                onPress={() => {}}
+                autoscroll={false}
+                height={416}
+              />
+            )}
           </View>
           <View style={styles.priceWrapper}>
-            <Text style={styles.price}>{`От ${product.price}₽`}</Text>
-            <Text style={styles.priceOld}>{`${product.price}₽`}</Text>
+            <Text style={styles.price}>{`От ${item.price}₽`}</Text>
+            <Text style={styles.priceOld}>{`${item.price}₽`}</Text>
           </View>
           <Text style={styles.textHeading}>Размер</Text>
-          <View style={styles.sizeProductSizeWrapper}>
-            <View style={styles.sizeWrapper}>
-              <Text style={styles.textSize}>30см / 650гр.</Text>
-            </View>
-            <View style={styles.sizeWrapperNotCheck}>
-              <Text style={styles.textSizeNotCheck}>40см / 1050гр. +300₽</Text>
-            </View>
+          <View style={styles.variantProductWrapper}>
+            {vars1.map((item) => renderVariantProduct(item))}
           </View>
           <Text style={{...styles.textHeading, paddingTop: 25}}>Тесто</Text>
-          <View style={styles.sizeProductSizeWrapper}>
-            <View style={styles.sizeWrapper}>
-              <Text style={styles.textSize}>Стандартное</Text>
-            </View>
-            <View style={styles.sizeWrapperNotCheck}>
-              <Text style={styles.textSizeNotCheck}>Сырный борт +30₽</Text>
-            </View>
-            <View style={styles.sizeWrapperNotCheck}>
-              <Text style={styles.textSizeNotCheck}>Тонкое</Text>
-            </View>
-            <View style={styles.sizeWrapperNotCheck}>
-              <Text style={styles.textSizeNotCheck}>Мясной борт +200 000₽</Text>
-            </View>
+          <View style={styles.variantProductWrapper}>
+            {vars2.map((item) => renderVariantProduct(item))}
           </View>
           <Text style={{...styles.textHeading, paddingTop: 25}}>Описание</Text>
           <View style={styles.textDescriptionWrapper}>
-            <Text style={styles.textDescription}>
-              Соус «Барбекю», сыр «Моцарелла», колбаса «Пепперони», куриные
-              грудки, бекон, петрушка
-            </Text>
+            <Text style={styles.textDescription}>{item.description}</Text>
           </View>
           <View style={styles.buyButtonWrapper}>
             <View style={styles.buyProductButton}>
               <TouchableOpacity>
                 <View style={styles.textBuyProductWrapper}>
                   <Text style={styles.textBuyProduct}>Заказать сейчас</Text>
-                  <Text style={styles.textBuyProductPrice}>5600₽</Text>
+                  <Text
+                    style={styles.textBuyProductPrice}>{`${item.price}₽`}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -106,7 +133,9 @@ const Product = inject(
               <TouchableOpacity>
                 <View style={styles.textBuyProductWrapper}>
                   <Text style={styles.textBuyProduct}>Заказать 2 товара</Text>
-                  <Text style={styles.textBuyProductPrice}>5600₽</Text>
+                  <Text style={styles.textBuyProductPrice}>{`${
+                    2 * item.price
+                  }₽`}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -164,37 +193,44 @@ const styles = StyleSheet.create({
     color: colors.grey,
     lineHeight: 24,
   },
-  textSize: {
+  variantTextSize: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     fontWeight: '900',
     color: colors.white,
   },
-  textSizeNotCheck: {
+  variantTextSizeNotCheck: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     fontWeight: '900',
     color: colors.black,
   },
-  sizeWrapper: {
+  variantWrapper: {
+    marginTop: 8,
+    marginLeft: 8,
     backgroundColor: colors.pink,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 35,
+    borderWidth: 1,
+    borderColor: colors.pink,
   },
-  sizeWrapperNotCheck: {
-    paddingLeft: 16,
+  variantWrapperNotCheck: {
+    marginTop: 8,
+    marginLeft: 8,
     backgroundColor: colors.white,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 35,
     borderWidth: 1,
   },
-  sizeProductSizeWrapper: {
-    paddingTop: 16,
+  variantProductWrapper: {
+    flex: 1,
+    paddingTop: 8,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    marginLeft: 16,
+    marginLeft: 8,
   },
   textHeading: {
     fontWeight: '500',
@@ -226,6 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginLeft: 16,
+    marginTop: 16,
   },
   headerWrapper: {
     justifyContent: 'space-between',

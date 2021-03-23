@@ -7,7 +7,7 @@ class CategoryStore {
   @observable category = {};
   @observable sort = ['name', 'ASC'];
   @observable range = [0, 24];
-  @observable filter = {}; // view {"category_id":[20,21,22]}
+  @observable filter = {};
   @observable loading = true;
   @observable categoryForCarousel = [];
 
@@ -19,14 +19,6 @@ class CategoryStore {
     );
     this.categories = response.data;
     this.loading = false;
-    // axios
-    //   .get(api + `Categories?sort=${this.sort}&range=${this.range}`)
-    //   .then((response) => {
-    //     this.categories = response.data;
-    //     console.log('this.categories555 ', this.categories);
-    //     console.log('response.data555 ', response.data);
-    //     this.loading = false;
-    //   });
   }
 
   @action.bound

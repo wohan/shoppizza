@@ -87,21 +87,6 @@ class ProductStore {
   }
 
   @action.bound
-  async loadProductsImages2(ids) {
-    this.loading = true;
-    const response = await axios
-      .get(api + `ProductImages?filter={"product_id":[${ids}]}`)
-      .then((response) => {
-        let links = response.data;
-        links.forEach((item) => {
-          item.linkImage = server + item.image_url;
-        });
-        this.loading = false;
-        return links;
-      });
-  }
-
-  @action.bound
   async loadProductVariations(id) {
     this.loading = true;
     const response = await axios.get(api + `ProductVariations/${id}`);
@@ -144,7 +129,6 @@ class ProductStore {
     console.log('this.product ', this.productVariationPropertyValues);
     console.log('response.data ', response.data);
   }
-  //  // productVariationPropertyValues
 }
 
 export default new ProductStore();
