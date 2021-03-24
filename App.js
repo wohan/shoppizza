@@ -8,7 +8,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Categories from './src/screens/Categories';
 import Basket from './src/screens/Basket';
 import Payment from './src/screens/Payment';
-import Products from './src/screens/Products';
+import Home from './src/screens/Home';
 import Product from './src/screens/Product';
 import Delivery from './src/screens/Delivery';
 import History from './src/screens/History';
@@ -28,6 +28,7 @@ import {
 import PaymentSuccess from './src/screens/PaymentSuccess';
 import PaymentError from './src/screens/PaymentError';
 import {colors} from './assets/colors/colors';
+import Products from './src/screens/Products';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,6 +45,16 @@ const CategoriesStack = () => {
       <Stack.Screen
         name={'categories'}
         component={Categories}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'products'}
+        component={Products}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={'product'}
+        component={Product}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -91,10 +102,10 @@ const PaymentStack = () => {
 
 const ProductsStack = () => {
   return (
-    <Stack.Navigator initialRouteName={'products'}>
+    <Stack.Navigator initialRouteName={'home'}>
       <Stack.Screen
-        name={'products'}
-        component={Products}
+        name={'home'}
+        component={Home}
         options={{headerShown: false}}
       />
       <Stack.Screen

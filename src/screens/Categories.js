@@ -5,22 +5,27 @@ import {colors} from '../../assets/colors/colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {IconImageCategory} from '../../assets/icon/icons';
 
-const Categories = inject('categoryStore')(
+const Categories = inject(
+  'categoryStore',
+  'productStore',
+)(
   observer(({navigation, categoryStore, productStore}) => {
     const {loadCategories, categories} = categoryStore;
+    const {setFilteredCategory} = productStore;
     useEffect(() => {
       loadCategories();
     }, []);
 
     const renderButtonCategory = (item) => {
-      const onClick = (item) => {
-        console.log('onClick item ', item);
+      const onClick = () => {
+        setFilteredCategory(item.id);
+        navigation.navigate('products', {item});
       };
 
       return (
         <TouchableOpacity
           style={styles.categoryButtonWrapper}
-          onPress={onClick}>
+          onPress={() => onClick()}>
           <View style={styles.categoryWrapper}>
             <IconImageCategory />
             <View style={styles.columnWrapper}>

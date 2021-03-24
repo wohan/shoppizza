@@ -33,7 +33,7 @@ const Product = inject(
   observer(({navigation, route, productStore}) => {
     let [linksImage, setLinksImage] = useState([]);
     let [currentTypeProduct, setCurrentTypeProduct] = useState({});
-    const {product, productsImages, loadProductsImages} = productStore;
+    const {productsImages, loadProductsImages} = productStore;
     console.log('route.params  ', route.params);
     const {item} = route.params;
 

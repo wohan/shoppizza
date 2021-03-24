@@ -17,6 +17,7 @@ class ProductStore {
   @observable range = [0, this.countLoadProducts];
   @observable filter = {};
   @observable loading = false;
+  @observable filteredCategory = undefined;
 
   @action.bound
   setProduct(newProduct) {
@@ -24,21 +25,27 @@ class ProductStore {
   }
 
   @action.bound
+  setFilteredCategory(idCategory) {
+    this.filteredCategory = idCategory;
+  }
+
+  @action.bound
   async loadProducts(startNumProduct, endNumProduct) {
     this.loading = true;
     const response = await axios.get(
-      api + `Products?sort=${this.sort}&range=${[startNumProduct, endNumProduct]}`,
+      api +
+        `Products?sort=${this.sort}
+      &range=${[startNumProduct, endNumProduct]}
+      &filter={"category_id":${this.filteredCategory}}`,
     );
-    let products = response.data;
     this.loading = false;
+    console.log("response.data ", response.data)
     return response.data;
   }
 
   @action.bound
   async loadFirstList() {
-    console.log('work loadFirstList 1');
     this.products = await this.loadProducts(0, this.countLoadProducts);
-    console.log('work loadFirstList 2', this.products);
   }
 
   @action.bound
@@ -59,17 +66,6 @@ class ProductStore {
     console.log('this.product ', this.product);
     console.log('response.data ', response.data);
   }
-
-  // @action.bound
-  // async loadProductImages(id) {
-  //   this.loading = true;
-  //   const response = await axios.get(api + `ProductImages/${id}`);
-  //   this.productImages = response.data;
-  //   this.loading = false;
-  //   // console.log('loadProductImages', this.product);
-  //   //ProductImages?filter={'product_id':[2001,2002]}
-  //   console.log('loadProductImages ', response.data);
-  // }
 
   @action.bound
   async loadProductsImages(ids) {
