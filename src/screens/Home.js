@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   Image,
+  Share,
   StyleSheet,
   ScrollView,
   FlatList,
@@ -13,9 +14,7 @@ import {
 import {colors} from '../../assets/colors/colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {IconFooterProductsList, IconSearch} from '../../assets/icon/icons';
-import {server} from '../stories/utils';
-
-// const categories = ['Одежда и обувь', 'Еда', 'Компьютеры и техника'];
+import RenderProduct from '../components/RenderProduct';
 
 const Home = inject(
   'categoryStore',
@@ -51,7 +50,6 @@ const Home = inject(
 
     const renderButtonCategory = (item) => {
       const onClick = () => {
-        console.log('onClick item ', item);
         setFilteredCategory(item.id);
         loadFirstList();
       };
@@ -68,14 +66,20 @@ const Home = inject(
     const renderImageCategory = (item) => {
       const onClick = (item) => {
         console.log('onClick item ', item);
+        navigation.navigate('products');
       };
 
       return (
         <TouchableOpacity style={styles.categoryImageWrapper} onPress={onClick}>
           <Image style={styles.categoryImage} source={{uri: item.linkImage}} />
-          <Text style={styles.categoryImageText}>Тут будет картинка11</Text>
+          <Text style={styles.categoryImageText}>Новая коллекция</Text>
         </TouchableOpacity>
       );
+    };
+
+    const onClickRenderProduct = (item) => {
+      setProduct(item);
+      navigation.navigate('product', {item});
     };
 
     const renderProduct = ({item}) => {
@@ -139,34 +143,37 @@ const Home = inject(
               <IconSearch />
             </TouchableOpacity>
           </View>
-        </SafeAreaView>
-        <View styles={{flex: 1, flexDirection: 'row'}}>
-          <ScrollView
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-            style={styles.categoriesWrapper}>
-            {categories.map((item) => renderButtonCategory(item))}
-          </ScrollView>
-        </View>
-        <View styles={styles.categoriesImageWrapper1}>
-          <View styles={styles.categoriesImageWrapper}>
+          <View style={{marginBottom: 20}}>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              style={styles.categoriesImageScrollWrapper}>
+              style={styles.categoriesWrapper}>
+              {categories.map((item) => renderButtonCategory(item))}
+            </ScrollView>
+          </View>
+          <View style={styles.categoriesImageWrapper}>
+            <ScrollView
+              horizontal={true}
+              disableIntervalMomentum={true}
+              showsHorizontalScrollIndicator={false}>
               {productsImages.map((item) => renderImageCategory(item))}
             </ScrollView>
           </View>
-        </View>
-        <View>
-          <FlatList
-            data={products}
-            renderItem={renderProduct}
-            keyExtractor={(item) => item.name}
-            ListFooterComponent={renderFooterListProducts}
-            onEndReached={loadNextList}
-          />
-        </View>
+          <View>
+            <FlatList
+              data={products}
+              renderItem={(item) => (
+                <RenderProduct
+                  item={item.item}
+                  onClick={onClickRenderProduct}
+                />
+              )}
+              keyExtractor={(item) => item.name}
+              ListFooterComponent={renderFooterListProducts}
+              onEndReached={loadNextList}
+            />
+          </View>
+        </SafeAreaView>
       </View>
     );
   }),
@@ -195,76 +202,56 @@ const styles = StyleSheet.create({
   footerListProductWrapper: {
     alignItems: 'center',
   },
-  productInfoHeader: {
-    color: colors.pink,
-    fontSize: 12,
-    fontFamily: 'Ubuntu-Regular',
-    lineHeight: 18,
-    paddingBottom: 6,
-  },
-  productInfoName: {
-    color: colors.black,
-    fontSize: 14,
-    fontFamily: 'Ubuntu-Regular',
-    lineHeight: 21,
-    paddingBottom: 6,
-    // //whiteSpace: 'nowrap',
-    // overflow: 'hidden',
-
-    //textOverflow: 'ellipsis',
-  },
-  productInfoDescription: {
-    color: colors.grey,
-    fontSize: 14,
-    fontFamily: 'Ubuntu-Regular',
-    lineHeight: 21,
-    paddingBottom: 5,
-  },
-  productInfoPrice: {
-    color: colors.black,
-    fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'Montserrat-Regular',
-    lineHeight: 21,
-  },
-  productImage: {
-    width: 119,
-    height: 119,
-    borderRadius: 6,
-  },
-  productImageWrapper: {
-    // width: '100%',
-    // height: '100%',
-  },
-  productWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingTop: 16,
-    paddingLeft: 16,
-  },
-  productInfoWrapper: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft: 19,
-    paddingRight: 19,
-  },
-  categoriesImageWrapper1: {
-    height: 220,
-    // margin: 30,
-    // padding: 30,
-    left: '0%',
-    right: '45.03%',
-    position: 'absolute',
-    top: 0,
-    backgroundColor: colors.pink,
-  },
+  // productInfoHeader: {
+  //   color: colors.pink,
+  //   fontSize: 12,
+  //   fontFamily: 'Ubuntu-Regular',
+  //   lineHeight: 18,
+  //   paddingBottom: 6,
+  // },
+  // productInfoName: {
+  //   color: colors.black,
+  //   fontSize: 14,
+  //   fontFamily: 'Ubuntu-Regular',
+  //   lineHeight: 21,
+  //   paddingBottom: 6,
+  // },
+  // productInfoDescription: {
+  //   color: colors.grey,
+  //   fontSize: 14,
+  //   fontFamily: 'Ubuntu-Regular',
+  //   lineHeight: 21,
+  //   paddingBottom: 5,
+  // },
+  // productInfoPrice: {
+  //   color: colors.black,
+  //   fontSize: 16,
+  //   fontWeight: '600',
+  //   fontFamily: 'Montserrat-Regular',
+  //   lineHeight: 21,
+  // },
+  // productImage: {
+  //   width: 119,
+  //   height: 119,
+  //   borderRadius: 6,
+  // },
+  // productWrapper: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   paddingTop: 16,
+  //   paddingLeft: 16,
+  // },
+  // productInfoWrapper: {
+  //   flex: 1,
+  //   flexDirection: 'column',
+  //   paddingLeft: 19,
+  //   paddingRight: 19,
+  // },
   categoriesImageWrapper: {
-    // flex: 1,
-    flexDirection: 'row',
-    height: 236,
-    margin: 16,
-    padding: 16,
-    backgroundColor: colors.orange,
+    height: 220,
+    paddingTop: 20,
+    alignItems: 'center',
+    backgroundColor: colors.pinkLight,
   },
   categoryButtonText: {
     fontFamily: 'Ubuntu-Regular',
@@ -302,9 +289,6 @@ const styles = StyleSheet.create({
   },
   categoriesWrapper: {
     marginTop: 16,
-  },
-  categoriesImageScrollWrapper: {
-    paddingTop: 16,
   },
   wrapper: {
     flex: 1,

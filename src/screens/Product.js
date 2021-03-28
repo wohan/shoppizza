@@ -5,6 +5,7 @@ import {inject, observer} from 'mobx-react';
 import {IconBack, IconShare} from '../../assets/icon/icons';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {colors} from '../../assets/colors/colors';
+import {onShare} from './utils';
 
 const images = [
   {
@@ -33,16 +34,27 @@ const Product = inject(
   observer(({navigation, route, productStore}) => {
     let [linksImage, setLinksImage] = useState([]);
     let [currentTypeProduct, setCurrentTypeProduct] = useState({});
-    const {productsImages, loadProductsImages} = productStore;
-    console.log('route.params  ', route.params);
+    const {
+      productsImages,
+      loadProductsImages,
+      loadProductVariations,
+      loadProductVariationProperties,
+      loadProductVariationPropertyListValues,
+      loadProductVariationPropertyValues,
+    } = productStore;
     const {item} = route.params;
 
     useEffect(() => {
+      setLinksImage([]);
       loadProductsImages(item.id);
+      loadProductVariations(item.id);
+      loadProductVariationProperties('');
+      loadProductVariationPropertyListValues('');
+      loadProductVariationPropertyValues('');
     }, []);
 
     useEffect(() => {
-      console.log('productsImages123 ', productsImages);
+      // console.log('productsImages123 ', productsImages);
       let list = [];
       productsImages.forEach((item) => {
         list.push({image: item.linkImage});
@@ -58,9 +70,7 @@ const Product = inject(
       return (
         <TouchableOpacity
           style={
-            selected
-              ? styles.variantWrapper
-              : styles.variantWrapperNotCheck
+            selected ? styles.variantWrapper : styles.variantWrapperNotCheck
           }
           onPress={() => setCurrentTypeProduct(item)}>
           <Text
@@ -81,7 +91,9 @@ const Product = inject(
               <IconBack />
             </TouchableOpacity>
             <Text style={styles.headerText}>{item.name}</Text>
-            <IconShare />
+            <TouchableOpacity onPress={() => onShare()}>
+              <IconShare />
+            </TouchableOpacity>
           </View>
         </SafeAreaView>
         <ScrollView

@@ -39,7 +39,6 @@ class ProductStore {
       &filter={"category_id":${this.filteredCategory}}`,
     );
     this.loading = false;
-    console.log("response.data ", response.data)
     return response.data;
   }
 
@@ -70,7 +69,7 @@ class ProductStore {
   @action.bound
   async loadProductsImages(ids) {
     this.loading = true;
-    const response = await axios
+    axios
       .get(api + `ProductImages?filter={"product_id":[${ids}]}`)
       .then((response) => {
         let links = response.data;
@@ -82,14 +81,25 @@ class ProductStore {
       });
   }
 
+  loadProductImages(id) {
+    return axios.get(api + `ProductImages?filter={"product_id":[${id}]}`);
+  }
+
+  loadProductVariations(idVariation) {
+    return axios.get(api + `ProductVariations/${idVariation}`);
+  }
+
   @action.bound
-  async loadProductVariations(id) {
+  async loadProductVariations2(idProduct) {
     this.loading = true;
-    const response = await axios.get(api + `ProductVariations/${id}`);
+    const response = await axios.get(
+      api +
+        `ProductVariations?
+    filter={'product_id':${idProduct}}`,
+    );
     this.productVariations = response.data;
     this.loading = false;
-    // console.log('this.productVariations ', this.productVariations);
-    // console.log('response.data ', response.data);
+    console.log('this.productVariations ', this.productVariations);
   }
 
   @action.bound
@@ -98,7 +108,10 @@ class ProductStore {
     const response = await axios.get(api + `ProductVariationProperties/${id}`);
     this.productVariationProperties = response.data;
     this.loading = false;
-    // console.log('this.product ', this.productVariationProperties);
+    console.log(
+      'this.productVariationProperties ',
+      this.productVariationProperties,
+    );
     // console.log('response.data ', response.data);
   }
 
@@ -110,20 +123,24 @@ class ProductStore {
     );
     this.productVariationPropertyListValues = response.data;
     this.loading = false;
-    console.log('this.product ', this.productVariationProperties);
-    console.log('response.data ', response.data);
+    console.log(
+      'this.productVariationPropertyListValues ',
+      this.productVariationPropertyListValues,
+    );
   }
 
   @action.bound
   async loadProductVariationPropertyValues(id) {
     this.loading = true;
     const response = await axios.get(
-      api + `ProductVariationPropertyListValues/${id}`,
+      api + `ProductVariationPropertyValues/${id}`,
     );
     this.productVariationPropertyValues = response.data;
     this.loading = false;
-    console.log('this.product ', this.productVariationPropertyValues);
-    console.log('response.data ', response.data);
+    console.log(
+      'this.productVariationPropertyValues ',
+      this.productVariationPropertyValues,
+    );
   }
 }
 

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
-  Image,
   Text,
   View,
   SafeAreaView,
@@ -13,9 +12,34 @@ import {inject, observer} from 'mobx-react';
 import CheckBox from '@react-native-community/checkbox';
 import {colors} from '../../assets/colors/colors';
 import {IconBack} from '../../assets/icon/icons';
+import DatePicker from 'react-native-date-picker';
+import moment from 'moment';
+import 'moment/locale/ru';
+import Autocomplete from 'react-native-autocomplete-input';
+moment.locale('ru');
 
 const Delivery = inject('basketStore')(
   observer(({navigation, basketStore}) => {
+    const [adress, setAdress] = useState({
+      date: new Date(),
+      otherMan: false,
+      adress: '',
+    });
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const {autocomplitAdress, autocomplitAdressList} = basketStore;
+
+    const onChangeAdress = (value, field) => {
+      if (field === 'adress') {
+        autocomplitAdress(value);
+      }
+      setAdress({...adress, [field]: value});
+    };
+
+    const onPressToOrder = () => {
+      console.log('adress ', adress);
+      navigation.navigate('payment');
+    };
+
     return (
       <SafeAreaView>
         <View style={styles.headerWrapper}>
@@ -28,39 +52,82 @@ const Delivery = inject('basketStore')(
           <View style={styles.deliveryWrapper}>
             <View style={styles.dateDeliveryWrapper}>
               <Text style={styles.textDelivery}>Когда доставить?</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(!showDatePicker)}>
                 <Text style={styles.changedDate}>Выбрать дату</Text>
               </TouchableOpacity>
+            </View>
+            <View style={styles.datePickerWrapper}>
+              {showDatePicker && (
+                <DatePicker
+                  locale={'ru'}
+                  date={adress.date}
+                  onDateChange={(date) => onChangeAdress(date, 'date')}
+                />
+              )}
             </View>
             <View style={styles.dateWrapper}>
               <Text style={styles.textDate}>Дата и время:</Text>
               <Text style={styles.currentDate}>
-                17 Января, Вт, 2021/14:00-16:00
+                {moment(adress.date).format('DD MMMM, dd, YYYY/hh:mm')}
               </Text>
             </View>
             <Text style={styles.textQuestion}>Куда доставить?</Text>
-            <TextInput style={styles.inputAdress} />
-            <Text style={styles.textAdressNotCorrect}>
-              Адрес вне зоны доставки поставщика
-            </Text>
+            {/*<TextInput*/}
+            {/*  style={styles.inputAdress}*/}
+            {/*  onChangeText={(value) => onChangeAdress(value, 'adress')}*/}
+            {/*/>*/}
+            <Autocomplete
+              style={styles.inputAdress}
+              data={autocomplitAdressList}
+              defaultValue={adress.adress}
+              onChangeText={(value) => onChangeAdress(value, 'adress')}
+              renderItem={({item, i}) => (
+                <TouchableOpacity
+                  onPress={() => onChangeAdress(item, 'adress')}>
+                  <Text style={styles.textAutocomplete}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            {
+              <Text style={styles.textAdressNotCorrect}>
+                Адрес вне зоны доставки поставщика
+              </Text>
+            }
             <View style={styles.inputRowWrapper}>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputDescription}>Подъезд</Text>
-                <TextInput style={styles.input} />
+                <TextInput
+                  style={styles.input}
+                  keyboardType="numeric"
+                  onChangeText={(value) => onChangeAdress(value, 'entrance')}
+                />
               </View>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputDescription}>Этаж</Text>
-                <TextInput style={styles.input} />
+                <TextInput
+                  onChangeText={(value) => onChangeAdress(value, 'floor')}
+                  style={styles.input}
+                  keyboardType="numeric"
+                />
               </View>
             </View>
             <View style={styles.inputRowWrapper}>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputDescription}>Офис/квартира</Text>
-                <TextInput style={styles.input} />
+                <TextInput
+                  onChangeText={(value) => onChangeAdress(value, 'apartment')}
+                  style={styles.input}
+                  keyboardType="numeric"
+                />
               </View>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputDescription}>Домофон</Text>
-                <TextInput style={styles.input} />
+                <TextInput
+                  keyboardType="numeric"
+                  onChangeText={(value) => onChangeAdress(value, 'intercom')}
+                  style={styles.input}
+                />
               </View>
             </View>
             <View style={styles.checkBoxWrapper}>
@@ -69,16 +136,23 @@ const Delivery = inject('basketStore')(
                 onTintColor={colors.white}
                 onCheckColor={colors.white}
                 style={styles.checkBox}
-                value={true}
+                value={adress.otherMan}
                 boxType={'square'}
+                onValueChange={(value) => onChangeAdress(value, 'otherMan')}
               />
               <Text style={styles.checkBoxDescription}>
                 Посылку примет другой человек.
               </Text>
             </View>
-            <TextInput placeholder={'Имя'} style={styles.inputName} />
+            <TextInput
+              placeholder={'Имя'}
+              onChangeText={(value) => onChangeAdress(value, 'name')}
+              style={styles.inputName}
+            />
             <TextInput
               placeholder={'Номер телефона'}
+              keyboardType="numeric"
+              onChangeText={(value) => onChangeAdress(value, 'phone')}
               style={styles.inputPhone}
             />
           </View>
@@ -97,8 +171,7 @@ const Delivery = inject('basketStore')(
             </View>
             <TouchableOpacity
               style={styles.buttonOrder}
-              onPress={() => navigation.navigate('payment')}
-            >
+              onPress={() => onPressToOrder()}>
               <Text style={styles.textButtonOrder}>Заказать за 11 784₽ </Text>
             </TouchableOpacity>
           </View>
@@ -109,6 +182,17 @@ const Delivery = inject('basketStore')(
 );
 
 const styles = StyleSheet.create({
+  textAutocomplete: {
+    marginHorizontal: 30,
+    marginVertical: 10,
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: '400',
+    fontSize: 14,
+  },
+  datePickerWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   textButtonOrder: {
     fontFamily: 'Montserrat-SemiBold',
     fontWeight: '600',
@@ -240,7 +324,6 @@ const styles = StyleSheet.create({
   },
   inputAdress: {
     flex: 1,
-    height: 56,
     borderColor: colors.grey,
     borderWidth: 1,
     borderRadius: 8,
@@ -248,8 +331,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Regular',
     fontWeight: '400',
     fontSize: 14,
-    lineHeight: 16,
     paddingHorizontal: 16,
+    paddingVertical: 19,
   },
   textQuestion: {
     color: colors.black,
@@ -299,6 +382,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     paddingBottom: 38,
     marginBottom: 8,
+    flex: 1,
   },
   dateDeliveryWrapper: {
     flexDirection: 'row',
