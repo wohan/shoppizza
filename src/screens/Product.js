@@ -1,11 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import {FlatListSlider} from 'react-native-flatlist-slider';
 import {inject, observer} from 'mobx-react';
 import {IconBack, IconShare} from '../../assets/icon/icons';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {colors} from '../../assets/colors/colors';
 import {onShare} from './utils';
+import {server} from '../stories/utils';
 
 const images = [
   {
@@ -32,11 +39,11 @@ const Product = inject(
   'productStore',
 )(
   observer(({navigation, route, productStore}) => {
-    let [linksImage, setLinksImage] = useState([]);
-    let [currentTypeProduct, setCurrentTypeProduct] = useState({});
+    const [linksImage, setLinksImage] = useState([]);
+    const [currentTypeProduct, setCurrentTypeProduct] = useState({});
+    const [price, setPrice] = useState(0);
     const {
-      productsImages,
-      loadProductsImages,
+      loadProductImages,
       loadProductVariations,
       loadProductVariationProperties,
       loadProductVariationPropertyListValues,
@@ -45,39 +52,37 @@ const Product = inject(
     const {item} = route.params;
 
     useEffect(() => {
-      setLinksImage([]);
-      loadProductsImages(item.id);
       loadProductVariations(item.id);
       loadProductVariationProperties('');
       loadProductVariationPropertyListValues('');
       loadProductVariationPropertyValues('');
+      loadProductImages(item.id).then((response) => {
+        let list = [];
+        response.data.forEach((value) => {
+          list.push({image: server + value.image_url});
+        });
+        setLinksImage(list);
+      });
+      loadProductVariations(item.id).then((response) => {
+        setPrice(response.data.price);
+      });
     }, []);
 
-    useEffect(() => {
-      // console.log('productsImages123 ', productsImages);
-      let list = [];
-      productsImages.forEach((item) => {
-        list.push({image: item.linkImage});
-      });
-      setLinksImage(list);
-      console.log('linksImage123 ', linksImage);
-    }, [productsImages]);
-
     const renderVariantProduct = (
-      item,
-      selected = currentTypeProduct === item,
+      variant,
+      selected = currentTypeProduct === variant,
     ) => {
       return (
         <TouchableOpacity
           style={
             selected ? styles.variantWrapper : styles.variantWrapperNotCheck
           }
-          onPress={() => setCurrentTypeProduct(item)}>
+          onPress={() => setCurrentTypeProduct(variant)}>
           <Text
             style={
               selected ? styles.variantTextSize : styles.variantTextSizeNotCheck
             }>
-            {item}
+            {variant}
           </Text>
         </TouchableOpacity>
       );
@@ -106,18 +111,20 @@ const Product = inject(
               borderRadius: 6,
               height: 416,
             }}>
-            {linksImage.length > 0 && (
+            {linksImage.length > 0 ? (
               <FlatListSlider
                 data={linksImage}
                 onPress={() => {}}
                 autoscroll={false}
                 height={416}
               />
+            ) : (
+              <ActivityIndicator size="large" />
             )}
           </View>
           <View style={styles.priceWrapper}>
-            <Text style={styles.price}>{`От ${item.price}₽`}</Text>
-            <Text style={styles.priceOld}>{`${item.price}₽`}</Text>
+            <Text style={styles.price}>{`От ${price}₽`}</Text>
+            <Text style={styles.priceOld}>{`${price}₽`}</Text>
           </View>
           <Text style={styles.textHeading}>Размер</Text>
           <View style={styles.variantProductWrapper}>

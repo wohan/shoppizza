@@ -1,4 +1,4 @@
-import {action, observable} from 'mobx';
+import { action, computed, observable } from "mobx";
 import axios from 'axios';
 import {api, server} from './utils';
 
