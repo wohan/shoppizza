@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useLayoutEffect} from 'react';
+import React, {useLayoutEffect} from 'react';
 import {inject, observer} from 'mobx-react';
 import {
   Text,
@@ -6,7 +6,6 @@ import {
   View,
   TextInput,
   Image,
-  Share,
   StyleSheet,
   ScrollView,
   FlatList,
@@ -21,7 +20,7 @@ const Home = inject(
   'productStore',
 )(
   observer(({navigation, categoryStore, productStore}) => {
-    const {loadCategories, categories, loading} = categoryStore;
+    const {loadCategories, categories} = categoryStore;
     const {
       loadProductsImages,
       products,
@@ -30,11 +29,8 @@ const Home = inject(
       loadProducts,
       loadFirstList,
       loadNextList,
-      loadProductImages,
       setFilteredCategory,
-      filteredCategory,
     } = productStore;
-    let [imagesCarosel, setImagesCarosel] = useState([]);
 
     useLayoutEffect(() => {
       setFilteredCategory(undefined);
@@ -65,7 +61,6 @@ const Home = inject(
 
     const renderImageCategory = (item) => {
       const onClick = (item) => {
-        console.log('onClick item ', item);
         navigation.navigate('products');
       };
 
@@ -80,40 +75,6 @@ const Home = inject(
     const onClickRenderProduct = (item) => {
       setProduct(item);
       navigation.navigate('product', {item});
-    };
-
-    const renderProduct = ({item}) => {
-      const onClick = () => {
-        setProduct(item);
-        navigation.navigate('product', {item});
-      };
-
-      item.price = 5600;
-
-      return (
-        <TouchableOpacity
-          style={styles.productWrapper}
-          onPress={() => onClick()}>
-          <View style={styles.productImageWrapper}>
-            <Image
-              style={styles.productImage}
-              source={{
-                uri: 'https://test2.sionic.ru//img/products/601a7316569d1.jpg',
-              }}
-            />
-          </View>
-          <View style={styles.productInfoWrapper}>
-            <Text style={styles.productInfoHeader}>Ситипицца</Text>
-            <Text numberOfLines={1} style={styles.productInfoName}>
-              {item.name}
-            </Text>
-            <Text numberOfLines={1} style={styles.productInfoDescription}>
-              {item.description}
-            </Text>
-            <Text style={styles.productInfoPrice}>{item.price}₽</Text>
-          </View>
-        </TouchableOpacity>
-      );
     };
 
     const renderFooterListProducts = () => {

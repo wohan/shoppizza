@@ -1,63 +1,35 @@
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useLayoutEffect} from 'react';
 import {inject, observer} from 'mobx-react';
 import {
   Text,
   SafeAreaView,
   View,
-  Image,
   StyleSheet,
   FlatList,
 } from 'react-native';
 import {colors} from '../../assets/colors/colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import { IconBack, IconFooterProductsList, IconShare } from "../../assets/icon/icons";
+import {
+  IconBack,
+  IconFooterProductsList,
+  IconShare,
+} from '../../assets/icon/icons';
+import RenderProduct from '../components/RenderProduct';
 
 const Products = inject(
   'categoryStore',
   'productStore',
 )(
   observer(({navigation, categoryStore, productStore, route}) => {
-    const {
-      products,
-      loadFirstList,
-      loadNextList,
-    } = productStore;
+    const {products, setProduct, loadFirstList, loadNextList} = productStore;
 
     useLayoutEffect(() => {
       loadFirstList();
     }, []);
 
-    const renderProduct = ({item}) => {
-      const onClick = () => {
-        navigation.navigate('product', {item});
-      };
-
-      item.price = 5600;
-
-      return (
-        <TouchableOpacity
-          style={styles.productWrapper}
-          onPress={() => onClick()}>
-          <View style={styles.productImageWrapper}>
-            <Image
-              style={styles.productImage}
-              source={{
-                uri: 'https://test2.sionic.ru//img/products/601a7316569d1.jpg',
-              }}
-            />
-          </View>
-          <View style={styles.productInfoWrapper}>
-            <Text style={styles.productInfoHeader}>Ситипицца</Text>
-            <Text numberOfLines={1} style={styles.productInfoName}>
-              {item.name}
-            </Text>
-            <Text numberOfLines={1} style={styles.productInfoDescription}>
-              {item.description}
-            </Text>
-            <Text style={styles.productInfoPrice}>{item.price}₽</Text>
-          </View>
-        </TouchableOpacity>
-      );
+    const onClickRenderProduct = (item) => {
+      setProduct(item);
+      navigation.navigate('product', {item});
     };
 
     const renderFooterListProducts = () => {
@@ -84,7 +56,9 @@ const Products = inject(
         <View>
           <FlatList
             data={products}
-            renderItem={renderProduct}
+            renderItem={(item) => (
+              <RenderProduct item={item.item} onClick={onClickRenderProduct} />
+            )}
             keyExtractor={(item) => item.name}
             ListFooterComponent={renderFooterListProducts}
             onEndReached={loadNextList}

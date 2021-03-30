@@ -144,7 +144,7 @@ const Product = inject(
                 <View style={styles.textBuyProductWrapper}>
                   <Text style={styles.textBuyProduct}>Заказать сейчас</Text>
                   <Text
-                    style={styles.textBuyProductPrice}>{`${item.price}₽`}</Text>
+                    style={styles.textBuyProductPrice}>{`${price}₽`}</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -153,7 +153,7 @@ const Product = inject(
                 <View style={styles.textBuyProductWrapper}>
                   <Text style={styles.textBuyProduct}>Заказать 2 товара</Text>
                   <Text style={styles.textBuyProductPrice}>{`${
-                    2 * item.price
+                    2 * price
                   }₽`}</Text>
                 </View>
               </TouchableOpacity>
