@@ -24,6 +24,16 @@ import iconSmileyError from './iconSmileyError.svg';
 import iconImageCategory from './iconImageCategory.svg';
 import iconCursorUp from './iconCursorUp.svg';
 import iconEye from './iconEye.svg';
+import iconGooglePay from './iconGooglePay.svg';
+import iconApplePay from './iconApplePay.svg';
+
+export const IconApplePay = () => (
+  <SvgXml width="65" height="27" xml={iconApplePay} />
+);
+
+export const IconGooglePay = () => (
+  <SvgXml width="65" height="27" xml={iconGooglePay} />
+);
 
 export const IconFooterProductsList = () => (
   <SvgXml width="128" height="62" xml={iconFooterProductsList} />

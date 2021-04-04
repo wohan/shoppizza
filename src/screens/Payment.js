@@ -1,15 +1,31 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
+  Dimensions,
   Text,
   SafeAreaView,
   View,
   TouchableOpacity,
   StyleSheet,
+  Platform,
+  Modal,
 } from 'react-native';
-import {IconBack, IconOrder, IconSuccess} from '../../assets/icon/icons';
+import {
+  IconApplePay,
+  IconBack,
+  IconGooglePay,
+  IconOrder,
+  IconSuccess,
+} from '../../assets/icon/icons';
 import {colors} from '../../assets/colors/colors';
 
+const windowWidth = Dimensions.get('window').width;
+
+const typesPay = {CARD: 1, GOOGLE_PAY: 2, APPLE_PAY: 3};
+
 const Payment = ({navigation}) => {
+  const [showModalPay, setShowModalPay] = useState(false);
+  const [typePay, setTypePay] = useState(typesPay.CARD);
+
   return (
     <SafeAreaView>
       <View style={styles.headerWrapper}>
@@ -25,10 +41,22 @@ const Payment = ({navigation}) => {
           <IconOrder />
         </TouchableOpacity>
       </View>
-      <View style={styles.bankCardWrapper}>
+      <TouchableOpacity
+        onPress={() => setShowModalPay(true)}
+        style={styles.bankCardWrapper}>
         <IconSuccess />
-        <Text style={styles.textBankCard}>Оплата банковской картой</Text>
-      </View>
+        {typePay === typesPay.CARD ? (
+          <Text style={styles.textBankCard}>Оплата банковской картой</Text>
+        ) : Platform.OS === 'ios' ? (
+          <View style={styles.iconPay}>
+            <IconApplePay />
+          </View>
+        ) : (
+          <View style={styles.iconPay}>
+            <IconGooglePay />
+          </View>
+        )}
+      </TouchableOpacity>
       <View style={styles.totalWrapper}>
         <Text style={styles.totalDescription}>Стоимость товаров:</Text>
         <Text style={styles.totalValue}>11 584₽</Text>
@@ -53,11 +81,87 @@ const Payment = ({navigation}) => {
         onPress={() => navigation.navigate('paymenterror')}>
         <Text style={styles.textSelect}>Выбрать</Text>
       </TouchableOpacity>
+      <Modal animationType="slide" transparent={true} visible={showModalPay}>
+        <View style={styles.modalWrapper}>
+          <Text style={styles.textHeaderModal}>Метод оплаты</Text>
+          <TouchableOpacity
+            onPress={() => {
+              setShowModalPay(false);
+              setTypePay(
+                Platform.OS === 'ios'
+                  ? typesPay.APPLE_PAY
+                  : typesPay.GOOGLE_PAY,
+              );
+            }}
+            style={styles.buttonPaySystem}>
+            {Platform.OS === 'ios' ? <IconApplePay /> : <IconGooglePay />}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setShowModalPay(false);
+              setTypePay(typesPay.CARD);
+            }}
+            style={styles.buttonPayCard}>
+            <Text style={styles.textButtonPayCard}>Банковская карта</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  iconPay: {
+    paddingLeft: 14,
+    paddingTop: 4,
+  },
+  textButtonPayCard: {
+    color: colors.white,
+    fontSize: 14,
+    fontFamily: 'Montserrat-SemiBold',
+    fontWeight: '600',
+    lineHeight: 21,
+    textAlign: 'center',
+  },
+  buttonPayCard: {
+    paddingHorizontal: 24,
+    width: 312,
+    height: 58,
+    backgroundColor: colors.blue,
+    borderRadius: 43,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  buttonPaySystem: {
+    paddingHorizontal: 24,
+    width: 312,
+    height: 58,
+    backgroundColor: colors.whiteGray,
+    borderRadius: 43,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textHeaderModal: {
+    color: colors.black,
+    fontSize: 20,
+    fontFamily: 'Ubuntu-Regular',
+    fontWeight: '500',
+    lineHeight: 21,
+    marginTop: 32,
+    marginBottom: 24,
+  },
+  modalWrapper: {
+    width: 360,
+    height: 230,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    top: '30%',
+    left: (windowWidth - 360) / 2,
+    alignItems: 'center',
+  },
   textSelect: {
     fontFamily: 'Montserrat-SemiBold',
     fontWeight: '600',

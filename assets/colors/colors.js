@@ -1,5 +1,6 @@
 export const colors = {
   gray: '#F7F8FB',
+  whiteGray: '#F0F4FB',
   white: '#FFFFFF',
   pink: '#FF2D87',
   pinkLight: '#F7E4EA',
@@ -11,4 +12,5 @@ export const colors = {
   grey: '#727280',
   lightGray: '#CECECE',
   green: '#58CF18',
+
 };

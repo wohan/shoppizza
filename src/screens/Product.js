@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -37,25 +37,46 @@ const vars2 = [
 const Product = inject(
   'categoryStore',
   'productStore',
+  'basketStore',
 )(
-  observer(({navigation, route, productStore}) => {
+  observer(({navigation, route, productStore, basketStore}) => {
     const [linksImage, setLinksImage] = useState([]);
     const [currentTypeProduct, setCurrentTypeProduct] = useState({});
     const [price, setPrice] = useState(0);
+    const [productVariationProperty, setProductVariationProperty] = useState(
+      [],
+    );
+    const [
+      productVariationPropertyListValues,
+      setProductVariationPropertyListValues,
+    ] = useState(0);
     const {
+      productsVariations,
+      productVariations,
+      productVariationPropertyValues,
+      getProductVariations,
+      getProductVariationPropertyValues,
+      getAllProductVariationProperty,
+      getAllProductVariationPropertyListValues,
+      getDataProductVariation,
       loadProductImages,
-      loadProductVariations,
-      loadProductVariationProperties,
-      loadProductVariationPropertyListValues,
-      loadProductVariationPropertyValues,
     } = productStore;
+    const {addProduct} = basketStore;
     const {item} = route.params;
 
-    useEffect(() => {
-      loadProductVariations(item.id);
-      loadProductVariationProperties('');
-      loadProductVariationPropertyListValues('');
-      loadProductVariationPropertyValues('');
+    useLayoutEffect(() => {
+      getProductVariations(item.id);
+      getProductVariationPropertyValues();
+      getAllProductVariationProperty().then((values) => {
+        let ttt = values.map((item) => item.data);
+        setProductVariationProperty(ttt);
+        console.log('getAllProductVariationProperty333 ', ttt);
+      });
+      getAllProductVariationPropertyListValues().then((values) => {
+        let ttt = values.map((item) => item.data);
+        setProductVariationPropertyListValues(ttt);
+        console.log('getAllProductVariationPropertyListValues333 ', ttt);
+      });
       loadProductImages(item.id).then((response) => {
         let list = [];
         response.data.forEach((value) => {
@@ -63,10 +84,31 @@ const Product = inject(
         });
         setLinksImage(list);
       });
-      loadProductVariations(item.id).then((response) => {
-        setPrice(response.data.price);
-      });
+      console.log('productVariations333 ', productVariations);
+      console.log(
+        'productVariationPropertyValues333 ',
+        productVariationPropertyValues,
+      );
     }, []);
+
+    useEffect(() => {
+      if (
+        productVariationPropertyValues.length > 0 &&
+        productVariationProperty.length > 0 &&
+        productVariationPropertyListValues.length > 0
+      ) {
+        let dataVar = getDataProductVariation(
+          3,
+          productVariationProperty,
+          productVariationPropertyListValues,
+        );
+        console.log('dataVar777 ', dataVar);
+      }
+    }, [
+      productVariationPropertyValues,
+      productVariationProperty,
+      productVariationPropertyListValues,
+    ]);
 
     const renderVariantProduct = (
       variant,
@@ -82,7 +124,7 @@ const Product = inject(
             style={
               selected ? styles.variantTextSize : styles.variantTextSizeNotCheck
             }>
-            {variant}
+            {variant.price}
           </Text>
         </TouchableOpacity>
       );
@@ -128,7 +170,7 @@ const Product = inject(
           </View>
           <Text style={styles.textHeading}>Размер</Text>
           <View style={styles.variantProductWrapper}>
-            {vars1.map((item) => renderVariantProduct(item))}
+            {productVariations.map((item) => renderVariantProduct(item))}
           </View>
           <Text style={{...styles.textHeading, paddingTop: 25}}>Тесто</Text>
           <View style={styles.variantProductWrapper}>
@@ -140,20 +182,38 @@ const Product = inject(
           </View>
           <View style={styles.buyButtonWrapper}>
             <View style={styles.buyProductButton}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  addProduct({
+                    count: 1,
+                    product: item,
+                    variation: currentTypeProduct,
+                  });
+                  navigation.navigate('basket');
+                }}>
                 <View style={styles.textBuyProductWrapper}>
                   <Text style={styles.textBuyProduct}>Заказать сейчас</Text>
                   <Text
-                    style={styles.textBuyProductPrice}>{`${price}₽`}</Text>
+                    style={
+                      styles.textBuyProductPrice
+                    }>{`${currentTypeProduct.price}₽`}</Text>
                 </View>
               </TouchableOpacity>
             </View>
             <View style={styles.buyTwoProductButton}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  addProduct({
+                    count: 2,
+                    product: item,
+                    variation: currentTypeProduct,
+                  });
+                  navigation.navigate('basket');
+                }}>
                 <View style={styles.textBuyProductWrapper}>
                   <Text style={styles.textBuyProduct}>Заказать 2 товара</Text>
                   <Text style={styles.textBuyProductPrice}>{`${
-                    2 * price
+                    2 * currentTypeProduct.price
                   }₽`}</Text>
                 </View>
               </TouchableOpacity>

@@ -7,7 +7,7 @@ import {server} from '../stories/utils';
 
 const RenderProduct = inject('productStore')(
   observer(({item, onClick, productStore}) => {
-    const {loadProductImages, loadProductVariations} = productStore;
+    const {loadProductImages, getProductVariations} = productStore;
     const [imageLink, setImageLink] = useState(null);
     const [price, setPrice] = useState(0);
 
@@ -15,9 +15,12 @@ const RenderProduct = inject('productStore')(
       loadProductImages(item.id).then((response) => {
         setImageLink(server + response.data[0].image_url);
       });
-      loadProductVariations(item.id).then((response) => {
-        setPrice(response.data.price);
-      });
+      let array = getProductVariations(item.id);
+      if (array.length > 0) {
+        setPrice(array[0].price);
+      } else {
+        setPrice(null);
+      }
     }, []);
 
     return (

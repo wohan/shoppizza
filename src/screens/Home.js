@@ -30,6 +30,8 @@ const Home = inject(
       loadFirstList,
       loadNextList,
       setFilteredCategory,
+      loadProductsVariations,
+      loadProductsVariationPropertyValues,
     } = productStore;
 
     useLayoutEffect(() => {
@@ -38,6 +40,8 @@ const Home = inject(
       loadProducts();
       loadFirstList();
       loadProductsImages([2001, 2002]);
+      loadProductsVariations();
+      loadProductsVariationPropertyValues();
     }, []);
 
     const onChangeText = (value) => {

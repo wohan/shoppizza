@@ -19,7 +19,13 @@ import {inject, observer} from 'mobx-react';
 
 const Basket = inject('basketStore')(
   observer(({navigation, basketStore}) => {
-    const {productsInBasket} = basketStore;
+    const {
+      productsInBasket,
+      updateCountProduct,
+      delProduct,
+      delAllProduct,
+      costBasket,
+    } = basketStore;
 
     const renderItem = (product) => {
       product.cacheBack = 300;
@@ -32,8 +38,10 @@ const Basket = inject('basketStore')(
           />
           <View style={styles.descriptionWrapper}>
             <View style={styles.nameProductWrapper}>
-              <Text style={styles.nameProduct}>{product.name}</Text>
-              <Text style={styles.priceProduct}>{`${product.price}₽`}</Text>
+              <Text style={styles.nameProduct}>{product.product.name}</Text>
+              <Text style={styles.priceProduct}>{`${
+                product.variation.price * product.count
+              }₽`}</Text>
             </View>
             <View style={styles.descriptionProductWrapper}>
               <Text style={styles.nameBrand}>Ситипицца</Text>
@@ -44,15 +52,30 @@ const Basket = inject('basketStore')(
             </View>
             <View style={styles.controlProductWrapper}>
               <View style={styles.controlCountProductWrapper}>
-                <TextInput style={styles.countProduct} />
-                <TouchableOpacity style={styles.downButton}>
+                <TextInput
+                  value={product.count.toString()}
+                  style={styles.countProduct}
+                  keyboardType="numeric"
+                  onChangeText={(value) =>
+                    updateCountProduct(value, product.product)
+                  }
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    updateCountProduct(product.count - 1, product.product)
+                  }
+                  style={styles.downButton}>
                   <IconButtonDown />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.upButton}>
+                <TouchableOpacity
+                  onPress={() =>
+                    updateCountProduct(product.count + 1, product.product)
+                  }
+                  style={styles.upButton}>
                   <IconButtonUp />
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => delProduct(product)}>
                 <IconBasket />
               </TouchableOpacity>
             </View>
@@ -75,7 +98,9 @@ const Basket = inject('basketStore')(
         </View>
         <View style={styles.textWrapper}>
           <Text style={styles.textBasket}>Моя корзина</Text>
-          <Text style={styles.clearBasketButton}>Очистить корзину</Text>
+          <TouchableOpacity onPress={() => delAllProduct()}>
+            <Text style={styles.clearBasketButton}>Очистить корзину</Text>
+          </TouchableOpacity>
         </View>
         <ScrollView
           style={styles.scrollView}
@@ -89,7 +114,7 @@ const Basket = inject('basketStore')(
               <Text style={styles.toRegistrationButton}>К оформлению</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.costProducts}>{`${10000}₽`}</Text>
+          <Text style={styles.costProducts}>{`${costBasket()}₽`}</Text>
         </View>
       </SafeAreaView>
     );

@@ -73,12 +73,9 @@ const Delivery = inject('basketStore')(
               </Text>
             </View>
             <Text style={styles.textQuestion}>Куда доставить?</Text>
-            {/*<TextInput*/}
-            {/*  style={styles.inputAdress}*/}
-            {/*  onChangeText={(value) => onChangeAdress(value, 'adress')}*/}
-            {/*/>*/}
             <Autocomplete
               style={styles.inputAdress}
+              inputContainerStyle={styles.inputAdressWrapper}
               data={autocomplitAdressList}
               defaultValue={adress.adress}
               onChangeText={(value) => onChangeAdress(value, 'adress')}
@@ -89,11 +86,11 @@ const Delivery = inject('basketStore')(
                 </TouchableOpacity>
               )}
             />
-            {
+            {false && (
               <Text style={styles.textAdressNotCorrect}>
                 Адрес вне зоны доставки поставщика
               </Text>
-            }
+            )}
             <View style={styles.inputRowWrapper}>
               <View style={styles.inputWrapper}>
                 <Text style={styles.inputDescription}>Подъезд</Text>
@@ -321,6 +318,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     paddingHorizontal: 16,
+  },
+  inputAdressWrapper: {
+    borderWidth: 0,
   },
   inputAdress: {
     flex: 1,
