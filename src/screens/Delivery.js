@@ -20,13 +20,15 @@ moment.locale('ru');
 
 const Delivery = inject('basketStore')(
   observer(({navigation, basketStore}) => {
-    const [adress, setAdress] = useState({
-      date: new Date(),
-      otherMan: false,
-      adress: '',
-    });
+    const {
+      adress,
+      autocomplitAdress,
+      autocomplitAdressList,
+      costBasket,
+      setAdress,
+    } = basketStore;
+
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const {autocomplitAdress, autocomplitAdressList} = basketStore;
 
     const onChangeAdress = (value, field) => {
       if (field === 'adress') {
@@ -61,7 +63,7 @@ const Delivery = inject('basketStore')(
               {showDatePicker && (
                 <DatePicker
                   locale={'ru'}
-                  date={adress.date}
+                  date={new Date(adress.date)}
                   onDateChange={(date) => onChangeAdress(date, 'date')}
                 />
               )}
@@ -69,7 +71,9 @@ const Delivery = inject('basketStore')(
             <View style={styles.dateWrapper}>
               <Text style={styles.textDate}>Дата и время:</Text>
               <Text style={styles.currentDate}>
-                {moment(adress.date).format('DD MMMM, dd, YYYY/hh:mm')}
+                {moment(new Date(adress.date)).format(
+                  'DD MMMM, dd, YYYY/hh:mm',
+                )}
               </Text>
             </View>
             <Text style={styles.textQuestion}>Куда доставить?</Text>
@@ -97,6 +101,7 @@ const Delivery = inject('basketStore')(
                 <TextInput
                   style={styles.input}
                   keyboardType="numeric"
+                  value={adress.entrance.toString()}
                   onChangeText={(value) => onChangeAdress(value, 'entrance')}
                 />
               </View>
@@ -105,6 +110,7 @@ const Delivery = inject('basketStore')(
                 <TextInput
                   onChangeText={(value) => onChangeAdress(value, 'floor')}
                   style={styles.input}
+                  value={adress.floor.toString()}
                   keyboardType="numeric"
                 />
               </View>
@@ -115,6 +121,7 @@ const Delivery = inject('basketStore')(
                 <TextInput
                   onChangeText={(value) => onChangeAdress(value, 'apartment')}
                   style={styles.input}
+                  value={adress.apartment.toString()}
                   keyboardType="numeric"
                 />
               </View>
@@ -122,6 +129,7 @@ const Delivery = inject('basketStore')(
                 <Text style={styles.inputDescription}>Домофон</Text>
                 <TextInput
                   keyboardType="numeric"
+                  value={adress.intercom.toString()}
                   onChangeText={(value) => onChangeAdress(value, 'intercom')}
                   style={styles.input}
                 />
@@ -143,11 +151,13 @@ const Delivery = inject('basketStore')(
             </View>
             <TextInput
               placeholder={'Имя'}
+              value={adress.name.toString()}
               onChangeText={(value) => onChangeAdress(value, 'name')}
               style={styles.inputName}
             />
             <TextInput
               placeholder={'Номер телефона'}
+              value={adress.phone.toString()}
               keyboardType="numeric"
               onChangeText={(value) => onChangeAdress(value, 'phone')}
               style={styles.inputPhone}
@@ -156,20 +166,22 @@ const Delivery = inject('basketStore')(
           <View style={styles.costWrapper}>
             <View style={styles.totalWrapper}>
               <Text style={styles.totalDescription}>Стоимость товаров:</Text>
-              <Text style={styles.totalValue}>11 584₽</Text>
+              <Text style={styles.totalValue}>{costBasket}₽</Text>
             </View>
             <View style={styles.totalWrapper}>
               <Text style={styles.totalDescription}>Стоимость доставки:</Text>
-              <Text style={styles.totalValue}>11 584₽</Text>
+              <Text style={styles.totalValue}>500₽</Text>
             </View>
             <View style={styles.totalWrapper}>
               <Text style={styles.totalDescription}>Итого:</Text>
-              <Text style={styles.totalValue}>11 584₽</Text>
+              <Text style={styles.totalValue}>{500 + costBasket}₽</Text>
             </View>
             <TouchableOpacity
               style={styles.buttonOrder}
               onPress={() => onPressToOrder()}>
-              <Text style={styles.textButtonOrder}>Заказать за 11 784₽ </Text>
+              <Text style={styles.textButtonOrder}>{`Заказать за ${
+                500 + costBasket
+              }₽`}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

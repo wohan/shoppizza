@@ -17,98 +17,104 @@ import {
   IconSuccess,
 } from '../../assets/icon/icons';
 import {colors} from '../../assets/colors/colors';
+import {inject, observer} from 'mobx-react';
 
 const windowWidth = Dimensions.get('window').width;
 
 const typesPay = {CARD: 1, GOOGLE_PAY: 2, APPLE_PAY: 3};
 
-const Payment = ({navigation}) => {
-  const [showModalPay, setShowModalPay] = useState(false);
-  const [typePay, setTypePay] = useState(typesPay.CARD);
+const Payment = inject('basketStore')(
+  observer(({navigation, basketStore}) => {
+    const {costBasket} = basketStore;
+    const [showModalPay, setShowModalPay] = useState(false);
+    const [typePay, setTypePay] = useState(typesPay.CARD);
 
-  return (
-    <SafeAreaView>
-      <View style={styles.headerWrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <IconBack />
-        </TouchableOpacity>
-        <Text style={styles.textHeader}>Оплата</Text>
-      </View>
-      <View style={styles.orderWrapper}>
-        <Text style={styles.textNumberOrder}>Номер заказа </Text>
-        <Text style={styles.numberOrder}> Z2020-17</Text>
-        <TouchableOpacity style={styles.orderWrapper}>
-          <IconOrder />
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity
-        onPress={() => setShowModalPay(true)}
-        style={styles.bankCardWrapper}>
-        <IconSuccess />
-        {typePay === typesPay.CARD ? (
-          <Text style={styles.textBankCard}>Оплата банковской картой</Text>
-        ) : Platform.OS === 'ios' ? (
-          <View style={styles.iconPay}>
-            <IconApplePay />
-          </View>
-        ) : (
-          <View style={styles.iconPay}>
-            <IconGooglePay />
-          </View>
-        )}
-      </TouchableOpacity>
-      <View style={styles.totalWrapper}>
-        <Text style={styles.totalDescription}>Стоимость товаров:</Text>
-        <Text style={styles.totalValue}>11 584₽</Text>
-      </View>
-      <View style={styles.totalWrapper}>
-        <Text style={styles.totalDescription}>
-          Стоимость доставки поставщиком:
-        </Text>
-        <Text style={styles.totalValue}>11 584₽</Text>
-      </View>
-      <View style={styles.totalWrapper}>
-        <Text style={styles.totalDescription}>Стоимость доставки до вас:</Text>
-        <Text style={styles.totalValue}>11 584₽</Text>
-      </View>
-      <View style={styles.totalWrapper}>
-        <Text style={styles.totalDescription}>Итого:</Text>
-        <Text style={styles.totalValue}>11 584₽</Text>
-      </View>
-      <TouchableOpacity
-        style={styles.buttonSelect}
-        // onPress={() => navigation.navigate('paymentsuccess')}>
-        onPress={() => navigation.navigate('paymenterror')}>
-        <Text style={styles.textSelect}>Выбрать</Text>
-      </TouchableOpacity>
-      <Modal animationType="slide" transparent={true} visible={showModalPay}>
-        <View style={styles.modalWrapper}>
-          <Text style={styles.textHeaderModal}>Метод оплаты</Text>
-          <TouchableOpacity
-            onPress={() => {
-              setShowModalPay(false);
-              setTypePay(
-                Platform.OS === 'ios'
-                  ? typesPay.APPLE_PAY
-                  : typesPay.GOOGLE_PAY,
-              );
-            }}
-            style={styles.buttonPaySystem}>
-            {Platform.OS === 'ios' ? <IconApplePay /> : <IconGooglePay />}
+    return (
+      <SafeAreaView>
+        <View style={styles.headerWrapper}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IconBack />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setShowModalPay(false);
-              setTypePay(typesPay.CARD);
-            }}
-            style={styles.buttonPayCard}>
-            <Text style={styles.textButtonPayCard}>Банковская карта</Text>
+          <Text style={styles.textHeader}>Оплата</Text>
+        </View>
+        <View style={styles.orderWrapper}>
+          <Text style={styles.textNumberOrder}>Номер заказа </Text>
+          <Text style={styles.numberOrder}> Z2020-17</Text>
+          <TouchableOpacity style={styles.orderWrapper}>
+            <IconOrder />
           </TouchableOpacity>
         </View>
-      </Modal>
-    </SafeAreaView>
-  );
-};
+        <TouchableOpacity
+          onPress={() => setShowModalPay(true)}
+          style={styles.bankCardWrapper}>
+          <IconSuccess />
+          {typePay === typesPay.CARD ? (
+            <Text style={styles.textBankCard}>Оплата банковской картой</Text>
+          ) : Platform.OS === 'ios' ? (
+            <View style={styles.iconPay}>
+              <IconApplePay />
+            </View>
+          ) : (
+            <View style={styles.iconPay}>
+              <IconGooglePay />
+            </View>
+          )}
+        </TouchableOpacity>
+        <View style={styles.totalWrapper}>
+          <Text style={styles.totalDescription}>Стоимость товаров:</Text>
+          <Text style={styles.totalValue}>{costBasket}₽</Text>
+        </View>
+        <View style={styles.totalWrapper}>
+          <Text style={styles.totalDescription}>
+            Стоимость доставки поставщиком:
+          </Text>
+          <Text style={styles.totalValue}>500₽</Text>
+        </View>
+        <View style={styles.totalWrapper}>
+          <Text style={styles.totalDescription}>
+            Стоимость доставки до вас:
+          </Text>
+          <Text style={styles.totalValue}>500₽</Text>
+        </View>
+        <View style={styles.totalWrapper}>
+          <Text style={styles.totalDescription}>Итого:</Text>
+          <Text style={styles.totalValue}>{500 + costBasket}₽</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.buttonSelect}
+          // onPress={() => navigation.navigate('paymentsuccess')}>
+          onPress={() => navigation.navigate('paymenterror')}>
+          <Text style={styles.textSelect}>Выбрать</Text>
+        </TouchableOpacity>
+        <Modal animationType="slide" transparent={true} visible={showModalPay}>
+          <View style={styles.modalWrapper}>
+            <Text style={styles.textHeaderModal}>Метод оплаты</Text>
+            <TouchableOpacity
+              onPress={() => {
+                setShowModalPay(false);
+                setTypePay(
+                  Platform.OS === 'ios'
+                    ? typesPay.APPLE_PAY
+                    : typesPay.GOOGLE_PAY,
+                );
+              }}
+              style={styles.buttonPaySystem}>
+              {Platform.OS === 'ios' ? <IconApplePay /> : <IconGooglePay />}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setShowModalPay(false);
+                setTypePay(typesPay.CARD);
+              }}
+              style={styles.buttonPayCard}>
+              <Text style={styles.textButtonPayCard}>Банковская карта</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </SafeAreaView>
+    );
+  }),
+);
 
 const styles = StyleSheet.create({
   iconPay: {

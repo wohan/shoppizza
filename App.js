@@ -75,6 +75,11 @@ const BasketStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name={'payment'}
+        component={Payment}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name={'paymentsuccess'}
         component={PaymentSuccess}
         options={{headerShown: false}}

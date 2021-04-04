@@ -114,7 +114,7 @@ const Basket = inject('basketStore')(
               <Text style={styles.toRegistrationButton}>К оформлению</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.costProducts}>{`${costBasket()}₽`}</Text>
+          <Text style={styles.costProducts}>{`${costBasket}₽`}</Text>
         </View>
       </SafeAreaView>
     );

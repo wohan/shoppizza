@@ -1,5 +1,4 @@
-import {action, observable} from 'mobx';
-import React, {useState} from 'react';
+import {action, computed, observable} from 'mobx';
 import axios from 'axios';
 import {create, persist} from 'mobx-persist';
 import {AsyncStorage} from 'react-native';
@@ -25,6 +24,17 @@ const hydrate = create({
 
 class BasketStore {
   @persist('list') @observable productsInBasket = [];
+  @persist('object') @observable adress = {
+    date: new Date().getTime(),
+    otherMan: false,
+    adress: '',
+    entrance: '',
+    floor: '',
+    apartment: '',
+    intercom: '',
+    phone: '',
+    name: '',
+  };
   @observable autocomplitAdressList = [];
   @observable loadingAutocomplitAdressList = false;
 
@@ -46,13 +56,18 @@ class BasketStore {
     this.productsInBasket = [];
   }
 
-  @action.bound
-  costBasket() {
+  @computed
+  get costBasket() {
     let cost = 0;
     this.productsInBasket.forEach((item) => {
       cost = cost + item.count * item.variation.price;
     });
     return cost;
+  }
+
+  @action.bound
+  setAdress(value) {
+    this.adress = value;
   }
 
   @action.bound
@@ -85,6 +100,8 @@ class BasketStore {
 }
 
 const basketStore = new BasketStore();
-hydrate('basketStore', basketStore).then(() => console.log('basketStore has been hydrated'));
+hydrate('basketStore', basketStore).then(() =>
+  console.log('basketStore has been hydrated'),
+);
 
 export default basketStore;
