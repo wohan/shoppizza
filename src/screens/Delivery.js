@@ -16,17 +16,24 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import 'moment/locale/ru';
 import Autocomplete from 'react-native-autocomplete-input';
+import {statusOrder} from '../stories/utils';
 moment.locale('ru');
 
-const Delivery = inject('basketStore')(
-  observer(({navigation, basketStore}) => {
+const Delivery = inject(
+  'basketStore',
+  'orderStore',
+)(
+  observer(({navigation, basketStore, orderStore}) => {
     const {
       adress,
+      productsInBasket,
       autocomplitAdress,
       autocomplitAdressList,
       costBasket,
       setAdress,
+      delAllProduct,
     } = basketStore;
+    const {addOrder, orders} = orderStore;
 
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -37,9 +44,19 @@ const Delivery = inject('basketStore')(
       setAdress({...adress, [field]: value});
     };
 
-    const onPressToOrder = () => {
-      console.log('adress ', adress);
-      navigation.navigate('payment');
+    const createOrder = () => {
+      let idOrder = new Date().getUTCMilliseconds();
+      let order = {
+        id: idOrder,
+        products: productsInBasket.map((product) => ({...product})),
+        adress,
+        status: statusOrder.CREATE,
+        number: `Z${moment(new Date()).format('YYYY')}-${orders.length}`,
+        members: 18,
+      };
+      addOrder(order);
+      //delAllProduct();
+      navigation.navigate('payment', {order});
     };
 
     return (
@@ -178,7 +195,7 @@ const Delivery = inject('basketStore')(
             </View>
             <TouchableOpacity
               style={styles.buttonOrder}
-              onPress={() => onPressToOrder()}>
+              onPress={() => createOrder()}>
               <Text style={styles.textButtonOrder}>{`Заказать за ${
                 500 + costBasket
               }₽`}</Text>

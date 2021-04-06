@@ -1,7 +1,7 @@
 import {action, computed, observable} from 'mobx';
 import axios from 'axios';
-import {create, persist} from 'mobx-persist';
-import {AsyncStorage} from 'react-native';
+import {persist} from 'mobx-persist';
+import {hydrate} from './utils';
 
 const url =
   'https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address';
@@ -16,11 +16,6 @@ let config = {
     Accept: 'application/json',
   },
 };
-
-const hydrate = create({
-  storage: AsyncStorage,
-  jsonify: true,
-});
 
 class BasketStore {
   @persist('list') @observable productsInBasket = [];
@@ -100,8 +95,6 @@ class BasketStore {
 }
 
 const basketStore = new BasketStore();
-hydrate('basketStore', basketStore).then(() =>
-  console.log('basketStore has been hydrated'),
-);
+hydrate('basketStore', basketStore);
 
 export default basketStore;

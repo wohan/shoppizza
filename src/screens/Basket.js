@@ -1,4 +1,5 @@
 import React from 'react';
+import {inject, observer} from 'mobx-react';
 import {
   Image,
   Text,
@@ -15,17 +16,37 @@ import {
   IconButtonDown,
   IconButtonUp,
 } from '../../assets/icon/icons';
-import {inject, observer} from 'mobx-react';
+import {statusOrder} from '../stories/utils';
+import moment from 'moment';
 
-const Basket = inject('basketStore')(
-  observer(({navigation, basketStore}) => {
+const Basket = inject(
+  'basketStore',
+  'orderStore',
+)(
+  observer(({navigation, basketStore, orderStore}) => {
     const {
+      adress,
       productsInBasket,
       updateCountProduct,
       delProduct,
       delAllProduct,
       costBasket,
     } = basketStore;
+
+    const {addOrder} = orderStore;
+
+    const createOrder = () => {
+      let order = {
+        products: productsInBasket.map((product) => ({...product})),
+        adress,
+        status: statusOrder.CREATE,
+        number: `Z${moment(new Date()).format('YYYY-dd')}`,
+        members: 18,
+      };
+      addOrder(order);
+      // delAllProduct();
+      navigation.navigate('delivery');
+    };
 
     const renderItem = (product) => {
       product.cacheBack = 300;

@@ -1,12 +1,6 @@
 import React, {useLayoutEffect} from 'react';
 import {inject, observer} from 'mobx-react';
-import {
-  Text,
-  SafeAreaView,
-  View,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
+import {Text, SafeAreaView, View, StyleSheet, FlatList} from 'react-native';
 import {colors} from '../../assets/colors/colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {
@@ -16,11 +10,8 @@ import {
 } from '../../assets/icon/icons';
 import RenderProduct from '../components/RenderProduct';
 
-const Products = inject(
-  'categoryStore',
-  'productStore',
-)(
-  observer(({navigation, categoryStore, productStore, route}) => {
+const Products = inject('productStore')(
+  observer(({navigation, productStore, route}) => {
     const {products, setProduct, loadFirstList, loadNextList} = productStore;
 
     useLayoutEffect(() => {

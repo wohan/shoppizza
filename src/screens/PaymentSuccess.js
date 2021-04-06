@@ -22,7 +22,9 @@ const PaymentSuccess = ({navigation}) => {
           Транзакция прошла успешно и ваш заказ поступил в обработку!
         </Text>
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('history')}>
         <Text style={styles.textButton}>Отслеживать статус заказа</Text>
       </TouchableOpacity>
     </SafeAreaView>

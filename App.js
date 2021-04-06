@@ -12,9 +12,11 @@ import Home from './src/screens/Home';
 import Product from './src/screens/Product';
 import Delivery from './src/screens/Delivery';
 import History from './src/screens/History';
+import Profile from './src/screens/Profile';
 import CategoryStore from './src/stories/CategoryStore';
 import BasketStore from './src/stories/BasketStore';
 import ProductStore from './src/stories/ProductStore';
+import OrderStore from './src/stories/OrderStore';
 import {
   IconCategory,
   IconCategoryPink,
@@ -37,6 +39,7 @@ const stories = {
   categoryStore: CategoryStore,
   basketStore: BasketStore,
   productStore: ProductStore,
+  orderStore: OrderStore,
 };
 
 const CategoriesStack = () => {
@@ -128,6 +131,18 @@ const HistoryStack = () => {
       <Stack.Screen
         name={'history'}
         component={History}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const ProfileStack = () => {
+  return (
+    <Stack.Navigator initialRouteName={'profile'}>
+      <Stack.Screen
+        name={'profile'}
+        component={Profile}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -243,7 +258,7 @@ class App extends React.Component {
             <Tab.Screen name={'categories'} component={CategoriesStack} />
             <Tab.Screen name={'basket'} component={BasketStack} />
             <Tab.Screen name={'history'} component={HistoryStack} />
-            <Tab.Screen name={'profile'} component={PaymentStack} />
+            <Tab.Screen name={'profile'} component={ProfileStack} />
           </Tab.Navigator>
         </NavigationContainer>
       </Provider>

@@ -40,16 +40,6 @@ const Product = inject(
   'basketStore',
 )(
   observer(({navigation, route, productStore, basketStore}) => {
-    const [linksImage, setLinksImage] = useState([]);
-    const [currentTypeProduct, setCurrentTypeProduct] = useState({});
-    const [price, setPrice] = useState(0);
-    const [productVariationProperty, setProductVariationProperty] = useState(
-      [],
-    );
-    const [
-      productVariationPropertyListValues,
-      setProductVariationPropertyListValues,
-    ] = useState(0);
     const {
       productsVariations,
       productVariations,
@@ -63,6 +53,17 @@ const Product = inject(
     } = productStore;
     const {addProduct} = basketStore;
     const {item} = route.params;
+
+    const [linksImage, setLinksImage] = useState([]);
+    const [currentTypeProduct, setCurrentTypeProduct] = useState({});
+    const [price, setPrice] = useState(0);
+    const [productVariationProperty, setProductVariationProperty] = useState(
+      [],
+    );
+    const [
+      productVariationPropertyListValues,
+      setProductVariationPropertyListValues,
+    ] = useState(0);
 
     useLayoutEffect(() => {
       getProductVariations(item.id);

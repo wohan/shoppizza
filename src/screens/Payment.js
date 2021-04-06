@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {inject, observer} from 'mobx-react';
 import {
   Dimensions,
   Text,
@@ -17,17 +18,27 @@ import {
   IconSuccess,
 } from '../../assets/icon/icons';
 import {colors} from '../../assets/colors/colors';
-import {inject, observer} from 'mobx-react';
+import {statusOrder, typesPay} from '../stories/utils';
 
 const windowWidth = Dimensions.get('window').width;
 
-const typesPay = {CARD: 1, GOOGLE_PAY: 2, APPLE_PAY: 3};
-
-const Payment = inject('basketStore')(
-  observer(({navigation, basketStore}) => {
+const Payment = inject(
+  'basketStore',
+  'orderStore',
+)(
+  observer(({navigation, basketStore, orderStore, route}) => {
     const {costBasket} = basketStore;
+    const {updateStatus, orders} = orderStore;
+    const {order} = route.params;
     const [showModalPay, setShowModalPay] = useState(false);
     const [typePay, setTypePay] = useState(typesPay.CARD);
+
+    const onPressPayment = () => {
+      // onPress={() => navigation.navigate('paymentsuccess')}
+      console.log("onPressPayment444", order);
+      updateStatus(order.id, statusOrder.PAID);
+      navigation.navigate('paymentsuccess');
+    };
 
     return (
       <SafeAreaView>
@@ -39,7 +50,7 @@ const Payment = inject('basketStore')(
         </View>
         <View style={styles.orderWrapper}>
           <Text style={styles.textNumberOrder}>Номер заказа </Text>
-          <Text style={styles.numberOrder}> Z2020-17</Text>
+          <Text style={styles.numberOrder}> {order.number}</Text>
           <TouchableOpacity style={styles.orderWrapper}>
             <IconOrder />
           </TouchableOpacity>
@@ -82,8 +93,7 @@ const Payment = inject('basketStore')(
         </View>
         <TouchableOpacity
           style={styles.buttonSelect}
-          // onPress={() => navigation.navigate('paymentsuccess')}>
-          onPress={() => navigation.navigate('paymenterror')}>
+          onPress={() => onPressPayment()}>
           <Text style={styles.textSelect}>Выбрать</Text>
         </TouchableOpacity>
         <Modal animationType="slide" transparent={true} visible={showModalPay}>
